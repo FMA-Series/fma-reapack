@@ -1,5 +1,6 @@
 name: ReaPack index
 
+
 # Regenerates index.xml automatically on every push that touches
 # plugin files, so students always get the latest versions.
 on:
@@ -10,14 +11,18 @@ on:
       - '**.png'
       - '.github/workflows/reapack-index.yml'
 
+
 permissions:
   contents: write
+
 
 jobs:
   index:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.3'
