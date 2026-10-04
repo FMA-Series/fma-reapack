@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<index version="1" commit="3f770fbaaf5da7b37cde4c99ac1a50b99c6b7259">
+  <category name="FMA Series">
+    <reapack name="fma-sub-air.jsfx" type="effect">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 FMA Sub-Air v1.3\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Mastering-grade sub & air sculptor from the FMA Series by Free Mix Audio. Free for students and friends of Free Mix Audio.\par}
+}
+]]></description>
+        <link rel="website">https://www.facebook.com/freemixaudio</link>
+        <link rel="screenshot">https://raw.githubusercontent.com/freemixaudio/fma-reapack/main/screenshots/fma-sub-air.png</link>
+      </metadata>
+      <version name="1.3" author="Free Mix Audio" time="2026-10-04T22:27:05Z">
+        <changelog><![CDATA[v1.3 (2026-10-01)
+  - GUI controls now update the DSP in real time (no need to press play)
+  - Per-section bypass switches respond instantly
+v1.2
+  - Initial FMA Series release]]></changelog>
+        <source>https://github.com/FMA-Series/fma-reapack/raw/3f770fbaaf5da7b37cde4c99ac1a50b99c6b7259/FMA%20Series/fma-sub-air.jsfx</source>
+      </version>
+    </reapack>
+  </category>
+  <metadata>
+    <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 FMA Series \u8212- Repositorio ReaPack de Free Mix Audio\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Este repositorio permite que REAPER {\b descargue y actualice autom\u225 ?ticamente} los plugins de la serie FMA en las computadoras de tus alumnos (y en la tuya).\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 C\u243 ?mo funciona\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 1.\tx360\tab Los archivos {\f1 .jsfx} (y sus PNGs de la interfaz) viven en este repositorio.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 2.\tx360\tab La herramienta oficial {\f1 reapack-index} genera el archivo {\f1 index.xml} a partir de los encabezados {\f1 @version}, {\f1 @changelog}, {\f1 @provides}, etc.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 3.\tx360\tab El alumno agrega {\b una sola vez} la URL del {\f1 index.xml} en REAPER \u8594 ? Extensions \u8594 ? ReaPack \u8594 ? Import repositories.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 4.\tx360\tab Desde entonces, ReaPack \u8594 ? Synchronize packages descarga lo nuevo y actualiza lo que ya ten\u237 ?a. Autom\u225 ?tico.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Es exactamente el mismo modelo que usa Tukan Studios.\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Publicarlo por primera vez\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Necesitas una cuenta gratuita de GitHub.\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \f1 # 1. Instalar la herramienta oficial (requiere Ruby, una sola vez)\line
+gem install reapack-index\line
+\line
+# 2. Crear el repo en GitHub (ej. "fma-reapack") y subir estos archivos\line
+git init\line
+git add .\line
+git commit -m "FMA Series ReaPack repo"\line
+git branch -M main\line
+git remote add origin https://github.com/TU-USUARIO/fma-reapack.git\line
+git push -u origin main\line
+\line
+# 3. Generar el index.xml (desde la ra\u237 ?z del repo)\line
+reapack-index --about README.md .\line
+\line
+# 4. Subir el index.xml generado\line
+git add index.xml\line
+git commit -m "index.xml"\line
+git push\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 URL que le das a tus alumnos\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \f1 https://raw.githubusercontent.com/TU-USUARIO/fma-reapack/main/index.xml\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 El alumno la pega en REAPER \u8594 ? Extensions \u8594 ? ReaPack \u8594 ? Import repositories \u8594 ? OK \u8594 ? ReaPack \u8594 ? Browse packages \u8594 ? instala "FMA Sub-Air".\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Publicar una actualizaci\u243 ?n (cuando haya una v1.4, un plugin nuevo, etc.)\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 1.\tx360\tab Edita el {\f1 .jsfx}: sube {\f1 @version} y agrega la entrada en {\f1 @changelog}.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 2.\tx360\tab Si agregas PNGs nuevos, ya est\u225 ?n cubiertos por {\f1 @provides fma-sub-air_gfx/*.png}.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 3.\tx360\tab Regenera y sube:\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \f1 reapack-index --about README.md .\line
+git add -A\line
+git commit -m "Sub-Air v1.4"\line
+git push\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Los alumnos ver\u225 ?n la actualizaci\u243 ?n disponible en ReaPack \u8594 ? Synchronize packages. Sin reenviar archivos por WhatsApp.\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Estructura\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \f1 FMA Series/\line
+  fma-sub-air.jsfx          <- plugin (con encabezados ReaPack)\line
+  fma-sub-air_gfx/          <- PNGs de la interfaz (cuando existan)\line
+screenshots/                <- capturas para el cat\u225 ?logo ReaPack\line
+index.xml                   <- generado por reapack-index (no editar a mano)\par}
+}
+]]></description>
+  </metadata>
+</index>
