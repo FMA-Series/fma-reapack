@@ -85,7 +85,7 @@
 // fail to compile. This matches all stock Cockos JSFX.
 //=============================================================================
 
-desc:FMA Sub-Air v1.4
+desc:FMA Sub-Air
 
 slider1:0<-12,12,0.1>Input Gain (dB)
 slider2:0<0,1,1{Off,On}>SUB Bypass
