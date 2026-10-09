@@ -107,8 +107,20 @@ v1.3 (2026-10-01)
   - Per-section bypass switches respond instantly
 v1.2
   - Initial FMA Series release]]></changelog>
-        <source>https://github.com/FMA-Series/fma-reapack/raw/4f08674e82db0675954e286822b869ba08084eb8/FMA%20Series/fma-sub-air.jsfx</source>
-        <source file="fma-sub-air_gfx/vu_off.png">https://github.com/FMA-Series/fma-reapack/raw/4f08674e82db0675954e286822b869ba08084eb8/FMA%20Series/fma-sub-air_gfx/vu_off.png</source>
+        <source>https://github.com/FMA-Series/fma-reapack/raw/71aaef0d6c11122f871aa3649b9ab54d5ec12aed/FMA%20Series/fma-sub-air.jsfx</source>
+        <source file="fma-sub-air_gfx/panel.png">https://github.com/FMA-Series/fma-reapack/raw/71aaef0d6c11122f871aa3649b9ab54d5ec12aed/FMA%20Series/fma-sub-air_gfx/panel.png</source>
+        <source file="fma-sub-air_gfx/knob_marron.png">https://github.com/FMA-Series/fma-reapack/raw/71aaef0d6c11122f871aa3649b9ab54d5ec12aed/FMA%20Series/fma-sub-air_gfx/knob_marron.png</source>
+        <source file="fma-sub-air_gfx/knob_hueso.png">https://github.com/FMA-Series/fma-reapack/raw/71aaef0d6c11122f871aa3649b9ab54d5ec12aed/FMA%20Series/fma-sub-air_gfx/knob_hueso.png</source>
+        <source file="fma-sub-air_gfx/knob_naranja.png">https://github.com/FMA-Series/fma-reapack/raw/71aaef0d6c11122f871aa3649b9ab54d5ec12aed/FMA%20Series/fma-sub-air_gfx/knob_naranja.png</source>
+        <source file="fma-sub-air_gfx/knob_rojo.png">https://github.com/FMA-Series/fma-reapack/raw/71aaef0d6c11122f871aa3649b9ab54d5ec12aed/FMA%20Series/fma-sub-air_gfx/knob_rojo.png</source>
+        <source file="fma-sub-air_gfx/knob_monobelow.png">https://github.com/FMA-Series/fma-reapack/raw/71aaef0d6c11122f871aa3649b9ab54d5ec12aed/FMA%20Series/fma-sub-air_gfx/knob_monobelow.png</source>
+        <source file="fma-sub-air_gfx/toggle_2pos.png">https://github.com/FMA-Series/fma-reapack/raw/71aaef0d6c11122f871aa3649b9ab54d5ec12aed/FMA%20Series/fma-sub-air_gfx/toggle_2pos.png</source>
+        <source file="fma-sub-air_gfx/mode_3pos.png">https://github.com/FMA-Series/fma-reapack/raw/71aaef0d6c11122f871aa3649b9ab54d5ec12aed/FMA%20Series/fma-sub-air_gfx/mode_3pos.png</source>
+        <source file="fma-sub-air_gfx/power_2pos.png">https://github.com/FMA-Series/fma-reapack/raw/71aaef0d6c11122f871aa3649b9ab54d5ec12aed/FMA%20Series/fma-sub-air_gfx/power_2pos.png</source>
+        <source file="fma-sub-air_gfx/led_verde_fs.png">https://github.com/FMA-Series/fma-reapack/raw/71aaef0d6c11122f871aa3649b9ab54d5ec12aed/FMA%20Series/fma-sub-air_gfx/led_verde_fs.png</source>
+        <source file="fma-sub-air_gfx/led_amarillo_fs.png">https://github.com/FMA-Series/fma-reapack/raw/71aaef0d6c11122f871aa3649b9ab54d5ec12aed/FMA%20Series/fma-sub-air_gfx/led_amarillo_fs.png</source>
+        <source file="fma-sub-air_gfx/vu_face.png">https://github.com/FMA-Series/fma-reapack/raw/71aaef0d6c11122f871aa3649b9ab54d5ec12aed/FMA%20Series/fma-sub-air_gfx/vu_face.png</source>
+        <source file="fma-sub-air_gfx/vu_off.png">https://github.com/FMA-Series/fma-reapack/raw/71aaef0d6c11122f871aa3649b9ab54d5ec12aed/FMA%20Series/fma-sub-air_gfx/vu_off.png</source>
       </version>
     </reapack>
   </category>
