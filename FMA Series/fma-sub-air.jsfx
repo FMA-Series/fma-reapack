@@ -1,4 +1,4 @@
-// @version 1.5.2
+// @version 1.5.3
 // @author Free Mix Audio
 // @changelog
 //   v1.5.2 (2026-10-09)
@@ -392,7 +392,6 @@ function dstr(id) (
             sprintf(#dtxt, "%+.1f dB", slider10);
 );
 //---------------------------------------------------------------- vintage UI helpers (Phase 2)
-// Design space: 1200 x 840. g_sc/g_ox/g_oy are set at the top of @gfx.
 function hit_knob(mx, my, cx, cy, dia) (
   (mx-cx)*(mx-cx) + (my-cy)*(my-cy) < (dia*0.5+10)*(dia*0.5+10);
 );
@@ -436,7 +435,6 @@ function draw_pushbtn(cx, cy, w, h, active) (  // caption via #dtxt
   gfx_drawstr(#dtxt, 1|4|256);
 );
 
-//---------------------------------------------------------------- Juan's panel GUI helpers (preview build)
 // Knob ids: 0=INPUT 1=OUTPUT 2=CLEAN 3=SUB ENHANCE 4=TIGHT 5=AIR 6=DRIVE 7=MONO BELOW
 function kval(id) (
   id==0 ? slider1 : id==1 ? slider10 : id==2 ? slider9 : id==3 ? slider3 :
@@ -714,8 +712,6 @@ function draw_tog2(cx, fr) (
   cnt >= 1024 ? ( cnt = 0; flush_all(); );
 
 //---------------------------------------------------------------- @gfx
-// Design space 720 x 580; everything is drawn scaled by sc so the whole
-// interface rescales proportionally with the window.
 //---------------------------------------------------------------- @gfx — Juan's panel (fixed 1024x700)
 @gfx 1024 700
   //--- POWER OFF: VU con apagado gradual (el bypass de audio está en @sample)
