@@ -1,6 +1,10 @@
-// @version 1.4
+// @version 1.5
 // @author Free Mix Audio
 // @changelog
+//   v1.5 (2026-10-09)
+//     - Display name simplificado a "FMA Sub-Air" (sin número de versión)
+//       para evitar conflictos en futuras actualizaciones. La versión
+//       se sigue controlando vía @version para ReaPack.
 //   v1.4 (2026-10-04)
 //     - NEW: Vintage Drive saturator — warm tube-style even-harmonic
 //       saturation ("silk" voicing: asymmetric triode-like curve, ultra-soft
