@@ -85,7 +85,11 @@ v1.2
         <source file="fma-sub-air_gfx/vu_off.png">https://github.com/FMA-Series/fma-reapack/raw/ffc5446f2c203f5055cdfa81c102f522df3c6dd8/FMA%20Series/fma-sub-air_gfx/vu_off.png</source>
       </version>
       <version name="1.5.2" author="Free Mix Audio" time="2026-10-09T04:25:15Z">
-        <changelog><![CDATA[v1.5.1 (2026-10-09)
+        <changelog><![CDATA[v1.5.2 (2026-10-09)
+  - Orden del bloque @gfx corregido: la declaración de tamaño
+    (@gfx 1024 700) ahora es la primera instrucción de la sección,
+    para que REAPER abra la ventana al tamaño correcto.
+v1.5.1 (2026-10-09)
   - VU Meter Mode ahora inicia en IN por defecto (antes GR).
 v1.5 (2026-10-09)
   - Display name simplificado a "FMA Sub-Air" (sin número de versión)
