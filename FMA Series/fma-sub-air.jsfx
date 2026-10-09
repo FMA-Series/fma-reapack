@@ -1,6 +1,9 @@
 // @version 1.5.3
 // @author Free Mix Audio
 // @changelog
+//   v1.5.3 (2026-10-09)
+//     - Limpieza de comentarios obsoletos en el código
+//       (referencias a tamaños de diseño anteriores y "preview build").
 //   v1.5.2 (2026-10-09)
 //     - Orden del bloque @gfx corregido: la declaración de tamaño
 //       (@gfx 1024 700) ahora es la primera instrucción de la sección,
