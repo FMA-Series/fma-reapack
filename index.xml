@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" commit="3f770fbaaf5da7b37cde4c99ac1a50b99c6b7259" name="Free Mix Audio">
+<index version="1" commit="1f5f4ce3a79dc9e2eee339923ba2cf5af4159916" name="Free Mix Audio">
   <category name="FMA Series">
     <reapack name="fma-sub-air.jsfx" type="effect">
       <metadata>
@@ -7,20 +7,28 @@
 {\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
 \widowctrl\hyphauto
 
-{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 FMA Sub-Air v1.3\par}
-{\pard \ql \f0 \sa180 \li0 \fi0 Mastering-grade sub & air sculptor from the FMA Series by Free Mix Audio. Free for students and friends of Free Mix Audio.\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 FMA Sub-Air v1.4\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Mastering-grade sub & air sculptor with Vintage Drive saturator. FMA Series by Free Mix Audio. Free for students and friends of Free Mix Audio.\par}
 }
 ]]></description>
         <link rel="website">https://www.facebook.com/freemixaudio</link>
-        <link rel="screenshot">https://raw.githubusercontent.com/freemixaudio/fma-reapack/main/screenshots/fma-sub-air.png</link>
+        <link rel="screenshot">https://raw.githubusercontent.com/FMA-Series/fma-reapack/main/screenshots/fma-sub-air.png</link>
       </metadata>
-      <version name="1.3" author="Free Mix Audio" time="2026-10-04T22:27:05Z">
-        <changelog><![CDATA[v1.3 (2026-10-01)
+      <version name="1.4" author="Free Mix Audio" time="2026-10-09T03:14:47Z">
+        <changelog><![CDATA[v1.4 (2026-10-04)
+  - NEW: Vintage Drive saturator — warm tube-style even-harmonic
+    saturation ("silk" voicing: asymmetric triode-like curve, ultra-soft
+    knee, subtlety-first). Red DRIVE knob (0% = transparent) plus
+    FOCUS selector (Sub / Full / Air) so the user chooses which band
+    gets saturated. 2x oversampled saturation path for alias-free
+    harmonics. Drive power switch (ON = processing).
+v1.3 (2026-10-01)
   - GUI controls now update the DSP in real time (no need to press play)
   - Per-section bypass switches respond instantly
 v1.2
   - Initial FMA Series release]]></changelog>
-        <source>https://github.com/FMA-Series/fma-reapack/raw/3f770fbaaf5da7b37cde4c99ac1a50b99c6b7259/FMA%20Series/fma-sub-air.jsfx</source>
+        <source>https://github.com/FMA-Series/fma-reapack/raw/1f5f4ce3a79dc9e2eee339923ba2cf5af4159916/FMA%20Series/fma-sub-air.jsfx</source>
+        <source file="fma-sub-air_gfx/vu_off.png">https://github.com/FMA-Series/fma-reapack/raw/1f5f4ce3a79dc9e2eee339923ba2cf5af4159916/FMA%20Series/fma-sub-air_gfx/vu_off.png</source>
       </version>
     </reapack>
   </category>
