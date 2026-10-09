@@ -1,15 +1,20 @@
-// @version 1.5.3
+// @version 1.5.4
 // @author Free Mix Audio
 // @changelog
+//   v1.5.4 (2026-10-09)
+//     - Reduced hit area on the 4 levers (SUB BYPASS,
+//       SAFETY LIMITER, AIR BYPASS, DRIVE POWER) and on the
+//       MODE selector: now ±48px horizontal and 565-614 vertical,
+//       fitted to the graphic edge. POWER unchanged.
 //   v1.5.3 (2026-10-09)
-//     - Limpieza de comentarios obsoletos en el código
-//       (referencias a tamaños de diseño anteriores y "preview build").
+//     - Code cleanup: removed obsolete comments
+//       (references to previous design sizes and "preview build").
 //   v1.5.2 (2026-10-09)
-//     - Orden del bloque @gfx corregido: la declaración de tamaño
-//       (@gfx 1024 700) ahora es la primera instrucción de la sección,
-//       para que REAPER abra la ventana al tamaño correcto.
+//     - Fixed @gfx block order: the size declaration
+//       (@gfx 1024 700) is now the first instruction in the section,
+//       so REAPER opens the window at the correct size.
 //   v1.5.1 (2026-10-09)
-//     - VU Meter Mode ahora inicia en IN por defecto (antes GR).
+//     - VU Meter Mode now defaults to IN (was GR).
 //   v1.5 (2026-10-09)
 //     - Display name simplificado a "FMA Sub-Air" (sin número de versión)
 //       para evitar conflictos en futuras actualizaciones. La versión
@@ -734,7 +739,7 @@ function draw_tog2(cx, fr) (
     // toggles (2-pos): 0=SUB BYPASS 1=SAFETY 2=AIR BYPASS 3=DRIVE POWER
     g_t = 0; while (g_t < 4) (
       g_tx = g_t==0 ? 192 : g_t==1 ? 409 : g_t==2 ? 635.5 : 745.5;
-      g_mx >= g_tx-64 && g_mx < g_tx+64 && g_my >= 525 && g_my < 654 ? (
+      g_mx >= g_tx-48 && g_mx < g_tx+48 && g_my >= 565 && g_my < 614 ? (
         g_t==0 ? ( slider2 = 1-(slider2>0.5); sliderchange(2); ) :
         g_t==1 ? ( slider6 = 1-(slider6>0.5); sliderchange(6); ) :
         g_t==2 ? ( slider7 = 1-(slider7>0.5); sliderchange(7); ) :
@@ -744,7 +749,7 @@ function draw_tog2(cx, fr) (
       g_t += 1;
     );
     // MODE 3-pos drag (LO-MID/FULL/HI-MID -> Drive Focus Sub/Full/Air)
-    g_mx >= 857.5-64 && g_mx < 857.5+64 && g_my >= 525 && g_my < 654 ? (
+    g_mx >= 857.5-48 && g_mx < 857.5+48 && g_my >= 565 && g_my < 614 ? (
       g_modedrag = 1;
     );
     // IN/GR/OUT LED radio (only one active)
