@@ -1,6 +1,13 @@
-// @version 1.5.4
+// @version 1.5.6
 // @author Free Mix Audio
 // @changelog
+//   v1.5.6 (2026-10-09)
+//     - VU face graphics corrected: scale graduation now matches
+//       the needle programming exactly.
+//   v1.5.5 (2026-10-09)
+//     - VU meter ballistics: dedicated level follower with 5ms attack
+//       and 150ms release (Tukan-style), plus asymmetric needle smoothing
+//       (fast attack 0.75, smooth release 0.35) for analog feel.
 //   v1.5.4 (2026-10-09)
 //     - Reduced hit area on the 4 levers (SUB BYPASS,
 //       SAFETY LIMITER, AIR BYPASS, DRIVE POWER) and on the
@@ -144,6 +151,7 @@ filename:12,fma-sub-air_gfx/vu_off.png
   gr = 1; gr_disp = 1;          // limiter gain (1 = no reduction)
   ef = 0; es = 0; harsh = 0;    // envelope followers
   m_in = 0; m_out = 0; cnt = 0; // meters / flush counter
+  vu_in_sm = 0; vu_out_sm = 0; // VU ballistics smoothers
   drag_id = -1;                 // GUI drag state
   g_f0 = 0; g_f1 = 0; g_f2 = 0; g_fdh = 0; g_dh_peak = 0; g_dh_last = -1;  // LED fades
   bypass_mix = 0;  // 0=wet, 1=dry
@@ -252,6 +260,8 @@ function upd_params() (
   sm_1ms   = smc(0.001134);  // harsh attack
   sm_113ms = smc(0.113);     // harsh release
   mdec     = exp(-1/(0.04534*srate));  // peak-meter decay
+  vu_atk   = exp(-1/(0.005*srate));     // VU attack 5ms
+  vu_rel   = exp(-1/(0.150*srate));     // VU release 150ms
 
   // sub crossover @160 Hz: Linkwitz-Riley 4th-order
   lp_coefs(160);
@@ -506,6 +516,9 @@ function draw_tog2(cx, fr) (
   x0 = spl0*in_g;
   x1 = spl1*in_g;
   m_in = max(m_in*mdec, max(abs(x0), abs(x1)));
+  vu_pk = max(abs(x0), abs(x1));
+  vu_pk > vu_in_sm ? vu_in_sm = vu_in_sm*vu_atk + vu_pk*(1-vu_atk)
+                   : vu_in_sm = vu_in_sm*vu_rel + vu_pk*(1-vu_rel);
 
   //================ SUB section ================
   (sub_byp || !sub_active) ? (
@@ -709,6 +722,9 @@ function draw_tog2(cx, fr) (
   startup = min(1, startup + 1/(0.015*srate));
   o0 *= startup; o1 *= startup;
   m_out = max(m_out*mdec, max(abs(o0), abs(o1)));
+  vu_pk = max(abs(o0), abs(o1));
+  vu_pk > vu_out_sm ? vu_out_sm = vu_out_sm*vu_atk + vu_pk*(1-vu_atk)
+                    : vu_out_sm = vu_out_sm*vu_rel + vu_pk*(1-vu_rel);
   //--- POWER bypass con crossfade de 25ms (click-free)
   // bypass_mix: 0=wet (POWER ON), 1=dry (POWER OFF)
   bypass_target = (slider15 > 0.5) ? 0 : 1;
@@ -802,11 +818,13 @@ function draw_tog2(cx, fr) (
   ) : (
     gfx_blit(12, 1, 0, 0,0,218,218, g_px0+521-109, g_py0+253-109, 218,218);
   );
-  slider14==0 ? g_vdb = 20*log10(max(m_in,0.0000001)) :
+  slider14==0 ? g_vdb = 20*log10(max(vu_in_sm,0.0000001)) :
   slider14==1 ? g_vdb = 20*log10(max(gr_disp,0.0000001)) - red_db :
-                g_vdb = 20*log10(max(m_out,0.0000001));
+                g_vdb = 20*log10(max(vu_out_sm,0.0000001));
   g_vdb = min(max(g_vdb,-20),3);
-  g_vdb <= 0 ? g_vang = 171-(g_vdb+20)*4.05 : g_vang = 90-g_vdb*26.333;
+  g_vdb <= 0 ? g_vang_t = 171-(g_vdb+20)*4.05 : g_vang_t = 90-g_vdb*26.333;
+  g_vang_t > g_vang ? g_vk = 0.75 : g_vk = 0.35;
+  g_vang += (g_vang_t - g_vang)*g_vk;
   g_var = g_vang*$pi/180;
   (slider15 > 0.5) ? (
     g_vpx = g_px0+521; g_vpy = g_py0+274;
