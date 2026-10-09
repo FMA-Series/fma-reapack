@@ -30,6 +30,8 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y pandoc
       - run: gem install reapack-index
       - run: reapack-index --about README.md --no-commit --name "Free Mix Audio" .
+      - name: Fix PNG provides (reapack-index bug workaround)
+        run: python3 .github/fix-pngs.py
       - name: Commit updated index.xml
         run: |
           git config user.name "github-actions[bot]"
