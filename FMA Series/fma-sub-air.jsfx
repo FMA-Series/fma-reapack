@@ -1,0 +1,818 @@
+// @version 1.4
+// @author Free Mix Audio
+// @changelog
+//   v1.4 (2026-10-04)
+//     - NEW: Vintage Drive saturator — warm tube-style even-harmonic
+//       saturation ("silk" voicing: asymmetric triode-like curve, ultra-soft
+//       knee, subtlety-first). Red DRIVE knob (0% = transparent) plus
+//       FOCUS selector (Sub / Full / Air) so the user chooses which band
+//       gets saturated. 2x oversampled saturation path for alias-free
+//       harmonics. Drive power switch (ON = processing).
+//   v1.3 (2026-10-01)
+//     - GUI controls now update the DSP in real time (no need to press play)
+//     - Per-section bypass switches respond instantly
+//   v1.2
+//     - Initial FMA Series release
+// @about
+//   # FMA Sub-Air v1.4
+//   Mastering-grade sub & air sculptor with Vintage Drive saturator.
+//   FMA Series by Free Mix Audio.
+//   Free for students and friends of Free Mix Audio.
+// @provides fma-sub-air_gfx/panel.png
+// @provides fma-sub-air_gfx/knob_marron.png
+// @provides fma-sub-air_gfx/knob_hueso.png
+// @provides fma-sub-air_gfx/knob_naranja.png
+// @provides fma-sub-air_gfx/knob_rojo.png
+// @provides fma-sub-air_gfx/knob_monobelow.png
+// @provides fma-sub-air_gfx/toggle_2pos.png
+// @provides fma-sub-air_gfx/mode_3pos.png
+// @provides fma-sub-air_gfx/power_2pos.png
+// @provides fma-sub-air_gfx/led_verde_fs.png
+// @provides fma-sub-air_gfx/led_amarillo_fs.png
+// @provides fma-sub-air_gfx/vu_face.png
+// @provides fma-sub-air_gfx/vu_off.png
+// @screenshot https://raw.githubusercontent.com/FMA-Series/fma-reapack/main/screenshots/fma-sub-air.png
+// @link https://www.facebook.com/freemixaudio
+//=============================================================================
+// FMA Sub-Air -- mastering sub & air sculptor + Vintage Drive
+// FMA Series · Free Mix Audio
+// (c) 2026 Free Mix Audio. All rights reserved.
+//
+// A mastering-grade low/high sculptor with safety guardrails:
+//   SUB section -- gentle sub enhance, transient punch, sub-to-mono
+//   AIR section -- smooth air shelf with dynamic de-harsh ("Clean")
+//   DRIVE section (NEW v1.4) -- Vintage Drive: warm tube-style saturator,
+//                  even-harmonic dominant ("silk" voicing, triode-like
+//                  asymmetric curve, ultra-soft knee). Red DRIVE knob,
+//                  FOCUS selector (Sub/Full/Air), 2x oversampled.
+//   MASTER      -- input/output trims, independent section bypass,
+//                  output safety limiter (fixed -1 dBFS ceiling),
+//                  in/out + limiter-GR metering
+//
+// Design notes (CPU-conscious):
+//   * Shelves are built as dry + g*filtered (one-pole) blends: no per-sample
+//     biquad coefficient updates, no zipper noise, trivial cost.
+//   * Biquads are only used where steepness matters (sub extraction @160 Hz,
+//     mono-ize lowpass, presence bandpass) and their coefficients are
+//     computed in @slider / upd_params(), never in @sample.
+//   * The Vintage Drive band-split reuses the 160 Hz LR4 coefficients and
+//     the 8 kHz one-pole highpass corner (coherent with Sub Enhance / Air).
+//   * Drive saturation runs at 2x (short FIR oversampling, delay-compensated
+//     wet path) to keep harmonics alias-free; the dry path is untouched.
+//   * All applied gains are one-pole smoothed in @sample (click-free).
+//   * ALL time constants are srate-independent: filter corners use
+//     2*pi*f/srate and every envelope/smoothing coefficient is built with
+//     smc(tau_seconds), so ballistics are identical at 44.1/48/88.2/96 kHz.
+//     Internal processing is 64-bit throughout (EEL2 doubles).
+//   * NaN/Inf sanitising on input and output; periodic denormal flush.
+//
+// v1.4 (2026-10-04):
+//   * NEW Vintage Drive saturator section (DSP + panel in the v1.3 UI
+//     style; the full vintage PNG interface follows in Phase 2).
+//   * Drive power switch uses ON = processing (no "bypass" double negative).
+//
+// v1.3 (2026-10-01):
+//   * Real-time GUI control: parameter changes made from the custom GUI
+//     now call upd_params() immediately (previously the derived values
+//     only refreshed when REAPER next fired @slider, e.g. on Play).
+//     Section bypasses engage/disengage instantly.
+//   * New rescalable GUI: neon identity from the Free Mix Audio logo,
+//     all-English labels with short explanations of every control.
+//   * desc bumped to v1.3. DSP path unchanged from v1.2 (44/44 verified).
+//
+// NOTE (EEL2 rule, verified empirically): @init must come before any
+// `function` definitions, otherwise calls from @slider/@sample silently
+// fail to compile. This matches all stock Cockos JSFX.
+//=============================================================================
+
+desc:FMA Sub-Air v1.4
+
+slider1:0<-12,12,0.1>Input Gain (dB)
+slider2:0<0,1,1{Off,On}>SUB Bypass
+slider3:0<0,100,1>Sub Enhance (%) - sub weight
+slider4:0<0,100,1>Tight (%) - transient punch
+slider5:0<0,4,1{Off,60,80,100,120}>Mono Below (Hz)
+slider6:0<0,1,1{On,Off}>Safety Limiter
+slider7:0<0,1,1{Off,On}>AIR Bypass
+slider8:0<0,6,0.1>Air (dB) - high shelf
+slider9:0<0,100,1>Clean (%) - de-harsh
+slider10:0<-12,12,0.1>Output Gain (dB)
+slider11:0<0,100,1>Drive (%) - vintage saturation
+slider12:1<0,2,1{Sub,Full,Air}>Drive Focus
+slider13:1<0,1,1{Off,On}>Drive Power
+slider14:1<0,2,1{IN,GR,OUT}>VU Meter Mode
+slider15:1<0,1,1{Off,On}>Power
+
+// pi is NOT a built-in EEL2 constant (reads as 0); stock plugins define
+// it themselves, so we set it here before anything uses it.
+//---------------------------------------------------------------- @init
+filename:0,fma-sub-air_gfx/panel.png
+filename:1,fma-sub-air_gfx/knob_marron.png
+filename:2,fma-sub-air_gfx/knob_hueso.png
+filename:3,fma-sub-air_gfx/knob_naranja.png
+filename:4,fma-sub-air_gfx/knob_rojo.png
+filename:5,fma-sub-air_gfx/knob_monobelow.png
+filename:6,fma-sub-air_gfx/toggle_2pos.png
+filename:7,fma-sub-air_gfx/mode_3pos.png
+filename:8,fma-sub-air_gfx/vu_face.png
+filename:9,fma-sub-air_gfx/power_2pos.png
+filename:10,fma-sub-air_gfx/led_verde_fs.png
+filename:11,fma-sub-air_gfx/led_amarillo_fs.png
+filename:12,fma-sub-air_gfx/vu_off.png
+@init
+  pi = 3.141592653589793;
+  in_g = 1; out_g = 1;          // smoothed applied gains
+  enh_g = 0; bamt = 0; red_db = 0;
+  gr = 1; gr_disp = 1;          // limiter gain (1 = no reduction)
+  ef = 0; es = 0; harsh = 0;    // envelope followers
+  m_in = 0; m_out = 0; cnt = 0; // meters / flush counter
+  drag_id = -1;                 // GUI drag state
+  g_f0 = 0; g_f1 = 0; g_f2 = 0; g_fdh = 0; g_dh_peak = 0; g_dh_last = -1;  // LED fades
+  bypass_mix = 0;  // 0=wet, 1=dry
+  ui_sliders = 0;               // generic sliders hidden (gfx UI only)
+  startup = 0;                  // startup fade (masks cold-start transients)
+  slider_show(32767, 0);        // hide all 15 generic sliders in the FX window
+  // (all filter states default to 0)
+
+  // ---- Vintage Drive state ----
+  drvw = 0; drvpush = 1;        // smoothed wet blend / saturation push
+  // 2x oversampling via polyphase FIR (no circular buffers: EEL2's &
+  // misbehaves on negative floats in this build). 17-tap halfband
+  // Hamming-windowed sinc, fc=0.25 of the 2x rate: -37dB at 30kHz,
+  // -55dB at Nyquist. Srate-independent. Scalar coefficients (verified);
+  // all delay histories are plain scalars (zero-init). Even taps are
+  // zero except the center (halfband) so the even phase is a scaled delay.
+  // Odd taps renormalized so odd-phase sum == even-phase sum (prevents
+  // Nyquist ripple from phase gain mismatch).
+  df1 = -0.0052574513455552;  df3 = 0.0232920444723720;
+  df5 = -0.0763712451093941;  df7 = 0.3087717982711559;
+  df8 = 0.5008702925771572;   df9 = 0.3087717982711560;
+  df11 = -0.0763712451093942; df13 = 0.0232920444723720;
+  df15 = -0.0052574513455552;
+  // (all history/delay states below default to 0)
+
+//---------------------------------------------------------------- helpers
+function lp_coefs(f) (
+  // 2nd-order Butterworth lowpass -> bq_* globals (unnormalised)
+  w0 = 2*pi*f/srate; cw = cos(w0); al = sin(w0)*0.7071067811865476;
+  bq_b0 = (1-cw)*0.5; bq_b1 = 1-cw; bq_b2 = (1-cw)*0.5;
+  bq_a0 = 1+al;       bq_a1 = -2*cw; bq_a2 = 1-al;
+);
+
+function bp_coefs(f, q) (
+  // bandpass, constant 0 dB peak gain -> bq_* globals (unnormalised)
+  w0 = 2*pi*f/srate; cw = cos(w0); al = sin(w0)/(2*q);
+  bq_b0 = al; bq_b1 = 0; bq_b2 = -al;
+  bq_a0 = 1+al; bq_a1 = -2*cw; bq_a2 = 1-al;
+);
+
+function hp_coefs(f) (
+  // 2nd-order Butterworth highpass -> bq_* globals (unnormalised)
+  w0 = 2*pi*f/srate; cw = cos(w0); al = sin(w0)*0.7071067811865476;
+  bq_b0 = (1+cw)*0.5; bq_b1 = -(1+cw); bq_b2 = (1+cw)*0.5;
+  bq_a0 = 1+al;       bq_a1 = -2*cw;   bq_a2 = 1-al;
+);
+
+function smc(tau_s) (
+  // one-pole smoothing coefficient for an absolute time constant tau_s
+  // (seconds). Same ballistics at ANY srate.
+  1 - exp(-1/(tau_s*srate));
+);
+
+function upd_params() (
+  // Recompute everything the DSP derives from the sliders. Called from
+  // @slider (REAPER-driven changes) AND from the GUI handlers the moment
+  // a control is touched, so GUI edits always apply in real time.
+  in_t    = 2^(slider1/6);
+  out_t   = 2^(slider10/6);
+  sub_byp = slider2 > 0.5;
+  air_byp = slider7 > 0.5;
+  enh_g_t = 10^(slider3*0.075/20) - 1;   // Sub Enhance 0..100% -> 0..+7.5 dB
+  punch01 = slider4*0.01;
+  mono_sel = slider5|0;
+  mono_f = mono_sel == 1 ? 60 : mono_sel == 2 ? 80 :
+           mono_sel == 3 ? 100 : mono_sel == 4 ? 120 : 80;
+  mono_t  = mono_sel > 0 ? 1 : 0;
+  // sub section is bit-transparent when no sub processing is dialed in
+  // (avoids crossover phase/magnitude ripple in the neutral path)
+  sub_active = (slider3 > 0) || (slider4 > 0) || (mono_sel > 0);
+  safety_on = slider6 < 0.5;
+  air_db  = slider8;
+  clean01 = slider9*0.01;
+
+  // ---- Vintage Drive ----
+  drv01    = slider11*0.01;
+  drv_focus = slider12|0;              // 0=Sub, 1=Full, 2=Air
+  drv_on   = slider13 > 0.5;          // power: ON = processing
+  // whole stage skipped unless the user actually dials drive in, so the
+  // neutral path stays bit-transparent (no added latency either)
+  drv_active = drv_on && (slider11 > 0);
+  // silk-zone mapping: smoothstep -> first third = micro-saturation,
+  // upper range opens to obvious warmth
+  damt = drv01*drv01*(3 - 2*drv01);
+  drvw_t   = damt;                    // wet blend 0..1
+  drvpush_t = 1 + damt*24;            // saturation push 1..25
+  // triode-like asymmetry (tune by ear/measurement): positive knee
+  // harder than negative -> even-harmonic dominant. Stronger ratio
+  // keeps H2 > H3 even at mid drive (silk voicing).
+  drv_ap = 1.6; drv_an = 0.28;
+  // DC-blocker coefficient (~10 Hz, srate-independent): the asymmetric
+  // saturator generates DC; remove it aggressively (only affects the
+  // saturated harmonics, not the dry fundamental in the wet/dry blend)
+  ddc_r = exp(-2*pi*10/srate);
+
+  // one-pole coefficients (depend on srate only)
+  c_lp55 = exp(-2*pi*55/srate);        // sub-enhance shelf corner
+  c_hp8k = exp(-2*pi*8000/srate);      // air shelf corner
+
+  // srate-independent smoothing (absolute time constants)
+  sm_gain  = smc(0.01134);   // param/mono-blend smoothing
+  sm_5ms   = smc(0.005);     // tight fast envelope
+  sm_50ms  = smc(0.050);     // tight slow envelope
+  sm_100ms = smc(0.100);     // limiter release
+  sm_fast  = smc(0.0004535); // GR meter + clean attack
+  sm_1ms   = smc(0.001134);  // harsh attack
+  sm_113ms = smc(0.113);     // harsh release
+  mdec     = exp(-1/(0.04534*srate));  // peak-meter decay
+
+  // sub crossover @160 Hz: Linkwitz-Riley 4th-order
+  lp_coefs(160);
+  s_b0 = bq_b0/bq_a0; s_b1 = bq_b1/bq_a0; s_b2 = bq_b2/bq_a0;
+  s_a1 = bq_a1/bq_a0; s_a2 = bq_a2/bq_a0;
+  hp_coefs(160);
+  sh_b0 = bq_b0/bq_a0; sh_b1 = bq_b1/bq_a0; sh_b2 = bq_b2/bq_a0;
+  sh_a1 = bq_a1/bq_a0; sh_a2 = bq_a2/bq_a0;
+
+  // mono-ize: Butterworth HP @mono_f on the sub-band side channel
+  hp_coefs(mono_f);
+  mh_b0 = bq_b0/bq_a0; mh_b1 = bq_b1/bq_a0; mh_b2 = bq_b2/bq_a0;
+  mh_a1 = bq_a1/bq_a0; mh_a2 = bq_a2/bq_a0;
+
+  // presence bandpass @4.5 kHz, Q=1 (harshness detector)
+  bp_coefs(4500, 1);
+  p_b0 = bq_b0/bq_a0; p_b1 = bq_b1/bq_a0; p_b2 = bq_b2/bq_a0;
+  p_a1 = bq_a1/bq_a0; p_a2 = bq_a2/bq_a0;
+);
+
+function drv_sat(x) (
+  // Vintage Drive "silk" saturator core (runs at 2x rate).
+  // Asymmetric rational soft clipper: different positive/negative knees
+  // (triode-like) -> even-harmonic dominant. Ultra-soft knee, unity
+  // small-signal gain, bounded output. drvpush/drv_ap/drv_an are globals
+  // refreshed by upd_params() / smoothed in @sample.
+  ax = x*drvpush;
+  a = ax >= 0 ? drv_ap : drv_an;
+  ax/(1 + a*abs(ax));
+);
+
+function flush_all() (  // denormal guard, called every 1024 samples (cheap)
+  abs(s_y1_0) < 0.000000000001 ? (s_y1_0 = 0);  abs(s_y2_0) < 0.000000000001 ? (s_y2_0 = 0);
+  abs(s_y1_1) < 0.000000000001 ? (s_y1_1 = 0);  abs(s_y2_1) < 0.000000000001 ? (s_y2_1 = 0);
+  abs(s2_y1_0) < 0.000000000001 ? (s2_y1_0 = 0);  abs(s2_y2_0) < 0.000000000001 ? (s2_y2_0 = 0);
+  abs(s2_y1_1) < 0.000000000001 ? (s2_y1_1 = 0);  abs(s2_y2_1) < 0.000000000001 ? (s2_y2_1 = 0);
+  abs(sh_y1_0) < 0.000000000001 ? (sh_y1_0 = 0);  abs(sh_y2_0) < 0.000000000001 ? (sh_y2_0 = 0);
+  abs(sh_y1_1) < 0.000000000001 ? (sh_y1_1 = 0);  abs(sh_y2_1) < 0.000000000001 ? (sh_y2_1 = 0);
+  abs(sh2_y1_0) < 0.000000000001 ? (sh2_y1_0 = 0);  abs(sh2_y2_0) < 0.000000000001 ? (sh2_y2_0 = 0);
+  abs(sh2_y1_1) < 0.000000000001 ? (sh2_y1_1 = 0);  abs(sh2_y2_1) < 0.000000000001 ? (sh2_y2_1 = 0);
+  abs(sh3_y1_0) < 0.000000000001 ? (sh3_y1_0 = 0);  abs(sh3_y2_0) < 0.000000000001 ? (sh3_y2_0 = 0);
+  abs(sh3_y1_1) < 0.000000000001 ? (sh3_y1_1 = 0);  abs(sh3_y2_1) < 0.000000000001 ? (sh3_y2_1 = 0);
+  abs(h_y1) < 0.000000000001 ? (h_y1 = 0);  abs(h_y2) < 0.000000000001 ? (h_y2 = 0);
+  abs(h2_y1) < 0.000000000001 ? (h2_y1 = 0);  abs(h2_y2) < 0.000000000001 ? (h2_y2 = 0);
+  abs(h3_y1) < 0.000000000001 ? (h3_y1 = 0);  abs(h3_y2) < 0.000000000001 ? (h3_y2 = 0);
+  abs(h4_y1) < 0.000000000001 ? (h4_y1 = 0);  abs(h4_y2) < 0.000000000001 ? (h4_y2 = 0);
+  abs(h5_y1) < 0.000000000001 ? (h5_y1 = 0);  abs(h5_y2) < 0.000000000001 ? (h5_y2 = 0);
+  abs(h6_y1) < 0.000000000001 ? (h6_y1 = 0);  abs(h6_y2) < 0.000000000001 ? (h6_y2 = 0);
+  abs(e_0) < 0.000000000001 ? (e_0 = 0);        abs(e_1) < 0.000000000001 ? (e_1 = 0);
+  abs(p_y1) < 0.000000000001 ? (p_y1 = 0);      abs(p_y2) < 0.000000000001 ? (p_y2 = 0);
+  abs(ef) < 0.000000000001 ? (ef = 0);          abs(es) < 0.000000000001 ? (es = 0);
+  abs(harsh) < 0.000000000001 ? (harsh = 0);
+  // Vintage Drive states
+  abs(dl_x1_0) < 0.000000000001 ? (dl_x1_0 = 0);  abs(dl_x2_0) < 0.000000000001 ? (dl_x2_0 = 0);
+  abs(dl_y1_0) < 0.000000000001 ? (dl_y1_0 = 0);  abs(dl_y2_0) < 0.000000000001 ? (dl_y2_0 = 0);
+  abs(dl2_x1_0) < 0.000000000001 ? (dl2_x1_0 = 0);  abs(dl2_x2_0) < 0.000000000001 ? (dl2_x2_0 = 0);
+  abs(dl2_y1_0) < 0.000000000001 ? (dl2_y1_0 = 0);  abs(dl2_y2_0) < 0.000000000001 ? (dl2_y2_0 = 0);
+  abs(dl_x1_1) < 0.000000000001 ? (dl_x1_1 = 0);  abs(dl_x2_1) < 0.000000000001 ? (dl_x2_1 = 0);
+  abs(dl_y1_1) < 0.000000000001 ? (dl_y1_1 = 0);  abs(dl_y2_1) < 0.000000000001 ? (dl_y2_1 = 0);
+  abs(dl2_x1_1) < 0.000000000001 ? (dl2_x1_1 = 0);  abs(dl2_x2_1) < 0.000000000001 ? (dl2_x2_1 = 0);
+  abs(dl2_y1_1) < 0.000000000001 ? (dl2_y1_1 = 0);  abs(dl2_y2_1) < 0.000000000001 ? (dl2_y2_1 = 0);
+  abs(dah_0) < 0.000000000001 ? (dah_0 = 0);  abs(dahx_0) < 0.000000000001 ? (dahx_0 = 0);
+  abs(dah_1) < 0.000000000001 ? (dah_1 = 0);  abs(dahx_1) < 0.000000000001 ? (dahx_1 = 0);
+  abs(ddc_x0) < 0.000000000001 ? (ddc_x0 = 0);  abs(ddc_y0) < 0.000000000001 ? (ddc_y0 = 0);
+  abs(ddc_x1) < 0.000000000001 ? (ddc_x1 = 0);  abs(ddc_y1) < 0.000000000001 ? (ddc_y1 = 0);
+  // polyphase histories + delay lines (plain scalars)
+  abs(dux0_0) < 0.000000000001 ? (dux0_0 = 0);  abs(dux1_0) < 0.000000000001 ? (dux1_0 = 0);
+  abs(dux2_0) < 0.000000000001 ? (dux2_0 = 0);  abs(dux3_0) < 0.000000000001 ? (dux3_0 = 0);
+  abs(dux4_0) < 0.000000000001 ? (dux4_0 = 0);  abs(dux5_0) < 0.000000000001 ? (dux5_0 = 0);
+  abs(dux6_0) < 0.000000000001 ? (dux6_0 = 0);
+  abs(dux0_1) < 0.000000000001 ? (dux0_1 = 0);  abs(dux1_1) < 0.000000000001 ? (dux1_1 = 0);
+  abs(dux2_1) < 0.000000000001 ? (dux2_1 = 0);  abs(dux3_1) < 0.000000000001 ? (dux3_1 = 0);
+  abs(dux4_1) < 0.000000000001 ? (dux4_1 = 0);  abs(dux5_1) < 0.000000000001 ? (dux5_1 = 0);
+  abs(dux6_1) < 0.000000000001 ? (dux6_1 = 0);
+  abs(dse0_0) < 0.000000000001 ? (dse0_0 = 0);  abs(dse1_0) < 0.000000000001 ? (dse1_0 = 0);
+  abs(dse2_0) < 0.000000000001 ? (dse2_0 = 0);  abs(dse3_0) < 0.000000000001 ? (dse3_0 = 0);
+  abs(dse4_0) < 0.000000000001 ? (dse4_0 = 0);  abs(dse5_0) < 0.000000000001 ? (dse5_0 = 0);
+  abs(dse6_0) < 0.000000000001 ? (dse6_0 = 0);  abs(dse7_0) < 0.000000000001 ? (dse7_0 = 0);
+  abs(dso0_0) < 0.000000000001 ? (dso0_0 = 0);  abs(dso1_0) < 0.000000000001 ? (dso1_0 = 0);
+  abs(dso2_0) < 0.000000000001 ? (dso2_0 = 0);  abs(dso3_0) < 0.000000000001 ? (dso3_0 = 0);
+  abs(dso4_0) < 0.000000000001 ? (dso4_0 = 0);  abs(dso5_0) < 0.000000000001 ? (dso5_0 = 0);
+  abs(dso6_0) < 0.000000000001 ? (dso6_0 = 0);  abs(dso7_0) < 0.000000000001 ? (dso7_0 = 0);
+  abs(dse0_1) < 0.000000000001 ? (dse0_1 = 0);  abs(dse1_1) < 0.000000000001 ? (dse1_1 = 0);
+  abs(dse2_1) < 0.000000000001 ? (dse2_1 = 0);  abs(dse3_1) < 0.000000000001 ? (dse3_1 = 0);
+  abs(dse4_1) < 0.000000000001 ? (dse4_1 = 0);  abs(dse5_1) < 0.000000000001 ? (dse5_1 = 0);
+  abs(dse6_1) < 0.000000000001 ? (dse6_1 = 0);  abs(dse7_1) < 0.000000000001 ? (dse7_1 = 0);
+  abs(dso0_1) < 0.000000000001 ? (dso0_1 = 0);  abs(dso1_1) < 0.000000000001 ? (dso1_1 = 0);
+  abs(dso2_1) < 0.000000000001 ? (dso2_1 = 0);  abs(dso3_1) < 0.000000000001 ? (dso3_1 = 0);
+  abs(dso4_1) < 0.000000000001 ? (dso4_1 = 0);  abs(dso5_1) < 0.000000000001 ? (dso5_1 = 0);
+  abs(dso6_1) < 0.000000000001 ? (dso6_1 = 0);  abs(dso7_1) < 0.000000000001 ? (dso7_1 = 0);
+  abs(dzz0_0) < 0.000000000001 ? (dzz0_0 = 0);  abs(dzz1_0) < 0.000000000001 ? (dzz1_0 = 0);
+  abs(dzz2_0) < 0.000000000001 ? (dzz2_0 = 0);  abs(dzz3_0) < 0.000000000001 ? (dzz3_0 = 0);
+  abs(dzz0_1) < 0.000000000001 ? (dzz0_1 = 0);  abs(dzz1_1) < 0.000000000001 ? (dzz1_1 = 0);
+  abs(dzz2_1) < 0.000000000001 ? (dzz2_1 = 0);  abs(dzz3_1) < 0.000000000001 ? (dzz3_1 = 0);
+  abs(dbb0_0) < 0.000000000001 ? (dbb0_0 = 0);  abs(dbb1_0) < 0.000000000001 ? (dbb1_0 = 0);
+  abs(dbb2_0) < 0.000000000001 ? (dbb2_0 = 0);  abs(dbb3_0) < 0.000000000001 ? (dbb3_0 = 0);
+  abs(dbb0_1) < 0.000000000001 ? (dbb0_1 = 0);  abs(dbb1_1) < 0.000000000001 ? (dbb1_1 = 0);
+  abs(dbb2_1) < 0.000000000001 ? (dbb2_1 = 0);  abs(dbb3_1) < 0.000000000001 ? (dbb3_1 = 0);
+);
+
+//---------------------------------------------------------------- gfx helpers
+// Design space: 720 x 440 units. The GUI computes a scale factor from the
+// actual window size and draws everything proportionally (rescalable).
+function dval(id) (
+  id == 7 ? slider5 :
+  id == 6 ? slider11 :
+  id == 0 ? slider3 : id == 1 ? slider4 : id == 2 ? slider8 :
+  id == 3 ? slider9 : id == 4 ? slider1 : slider10;
+);
+function dmin(id) ( (id == 4 || id == 5) ? -12 : 0; );  // id7: 0..4
+function dmax(id) ( id == 2 ? 6 : id == 7 ? 4 : (id == 4 || id == 5) ? 12 : 100; );
+function dspan(id) ( dmax(id) - dmin(id); );
+function ddef(id) ( 0; );  // all gfx slider defaults are 0; mono-below reset -> Off
+function dslider_of(id) (
+  id == 7 ? 5 :
+  id == 6 ? 11 :
+  id == 0 ? 3 : id == 1 ? 4 : id == 2 ? 8 : id == 3 ? 9 : id == 4 ? 1 : 10;
+);
+function dset(id, v) (
+  v = min(max(v, dmin(id)), dmax(id));
+  id == 7 ? slider5 = floor(v + 0.5) :
+  id == 6 ? slider11 = v :
+  id == 0 ? slider3 = v : id == 1 ? slider4 = v : id == 2 ? slider8 = v :
+  id == 3 ? slider9 = v : id == 4 ? slider1 = v : slider10 = v;
+  sliderchange(dslider_of(id));
+  upd_params();
+);
+function fstr(i) (
+  // Drive FOCUS label -> #dtxt global (EEL2: no #string params/returns)
+  i == 0 ? #dtxt = "SUB" : i == 1 ? #dtxt = "FULL" : #dtxt = "AIR";
+);
+// NOTE (EEL2 rule): #strings cannot be params/returns of plain functions
+// (only methods/instance). Labels travel via the #dlbl / #dtxt globals.
+function mstr(i) (
+  i == 0 ? #dtxt = "Off" : i == 1 ? #dtxt = "60" : i == 2 ? #dtxt = "80" :
+  i == 3 ? #dtxt = "100" : #dtxt = "120";
+);
+function dstr(id) (
+  id == 7 ? mstr(slider5|0) :
+  id == 6 ? sprintf(#dtxt, "%d %%", slider11|0) :
+  id == 0 ? sprintf(#dtxt, "%d %%", slider3|0) :
+  id == 1 ? sprintf(#dtxt, "%d %%", slider4|0) :
+  id == 2 ? sprintf(#dtxt, "+%.1f dB", slider8) :
+  id == 3 ? sprintf(#dtxt, "%d %%", slider9|0) :
+  id == 4 ? sprintf(#dtxt, "%+.1f dB", slider1) :
+            sprintf(#dtxt, "%+.1f dB", slider10);
+);
+//---------------------------------------------------------------- vintage UI helpers (Phase 2)
+// Design space: 1200 x 840. g_sc/g_ox/g_oy are set at the top of @gfx.
+function hit_knob(mx, my, cx, cy, dia) (
+  (mx-cx)*(mx-cx) + (my-cy)*(my-cy) < (dia*0.5+10)*(dia*0.5+10);
+);
+function click_toggle(mx, my, cx, cy, sn) (
+  mx >= cx-80 && mx < cx+80 && my >= cy-26 && my < cy+26 ? (
+    sn == 2 ? slider2 = 1 - (slider2 > 0.5) :
+    sn == 6 ? slider6 = 1 - (slider6 > 0.5) :
+    sn == 7 ? slider7 = 1 - (slider7 > 0.5) :
+              slider13 = 1 - (slider13 > 0.5);
+    sliderchange(sn); upd_params();
+  );
+);
+function draw_vknob(img, isz, cx, cy, dia, id, pr, pg, pb) (
+  norm = (dval(id) - dmin(id))/dspan(id);
+  gfx_blit(img, 1, 0, 0, 0, isz, isz,
+           g_ox + (cx - dia*0.5)*g_sc, g_oy + (cy - dia*0.5)*g_sc,
+           dia*g_sc, dia*g_sc);
+  ang = (-135 + 270*norm - 90)*$pi/180;
+  px = g_ox + cx*g_sc; py = g_oy + cy*g_sc;
+  gfx_set(pr, pg, pb);
+  gfx_line(px + dia*0.16*g_sc*cos(ang), py + dia*0.16*g_sc*sin(ang),
+           px + dia*0.40*g_sc*cos(ang), py + dia*0.40*g_sc*sin(ang), 1);
+);
+function draw_toggle(cx, cy, on) (  // slot baked into bg; handle drawn here
+  ghx = on ? cx + 40 : cx - 40;
+  gx0 = g_ox + (ghx-28)*g_sc; gy0 = g_oy + (cy-20)*g_sc;
+  gfx_set(0.08, 0.07, 0.06); gfx_roundrect(gx0-2*g_sc, gy0-2*g_sc, 60*g_sc, 44*g_sc, 9*g_sc, 1);
+  gfx_set(0.52, 0.49, 0.44); gfx_roundrect(gx0, gy0, 56*g_sc, 40*g_sc, 8*g_sc, 1);
+  gfx_set(0.72, 0.69, 0.63); gfx_roundrect(gx0, gy0, 56*g_sc, 18*g_sc, 8*g_sc, 1);
+  gfx_set(0.25, 0.23, 0.21); gfx_line(gx0+28*g_sc, gy0+5*g_sc, gx0+28*g_sc, gy0+35*g_sc, 1);
+);
+function draw_pushbtn(cx, cy, w, h, active) (  // caption via #dtxt
+  gx0 = g_ox + (cx-w/2)*g_sc; gy0 = g_oy + (cy-h/2)*g_sc;
+  active ? gfx_set(0.95, 0.60, 0.24) : gfx_set(0.30, 0.26, 0.22);
+  gfx_roundrect(gx0-2*g_sc, gy0-2*g_sc, (w+4)*g_sc, (h+4)*g_sc, 7*g_sc, 1);
+  gfx_set(0.09, 0.08, 0.07); gfx_roundrect(gx0, gy0, w*g_sc, h*g_sc, 6*g_sc, 1);
+  gfx_set(0.15, 0.13, 0.11); gfx_roundrect(gx0, gy0, w*g_sc, h*g_sc*0.45, 6*g_sc, 1);
+  active ? gfx_set(1.0, 0.80, 0.52) : gfx_set(0.80, 0.67, 0.46);
+  gfx_setfont(3, "Arial", max(9, 19*g_sc));
+  gfx_x = g_ox + cx*g_sc; gfx_y = g_oy + cy*g_sc;
+  gfx_drawstr(#dtxt, 1|4|256);
+);
+
+//---------------------------------------------------------------- Juan's panel GUI helpers (preview build)
+// Knob ids: 0=INPUT 1=OUTPUT 2=CLEAN 3=SUB ENHANCE 4=TIGHT 5=AIR 6=DRIVE 7=MONO BELOW
+function kval(id) (
+  id==0 ? slider1 : id==1 ? slider10 : id==2 ? slider9 : id==3 ? slider3 :
+  id==4 ? slider4 : id==5 ? slider8 : id==6 ? slider11 : slider5;
+);
+function kmin(id) ( (id==0||id==1) ? -12 : 0; );
+function kmax(id) ( id==0||id==1 ? 12 : id==5 ? 6 : id==7 ? 4 : 100; );
+function kdef(id) ( 0; );
+function kset(id, v) (
+  v = min(max(v, kmin(id)), kmax(id));
+  id==7 ? v = floor(v+0.5);
+  id==0 ? slider1=v : id==1 ? slider10=v : id==2 ? slider9=v : id==3 ? slider3=v :
+  id==4 ? slider4=v : id==5 ? slider8=v : id==6 ? slider11=v : slider5=v;
+  id==0 ? sliderchange(1) : id==1 ? sliderchange(10) : id==2 ? sliderchange(9) :
+  id==3 ? sliderchange(3) : id==4 ? sliderchange(4) : id==5 ? sliderchange(8) :
+  id==6 ? sliderchange(11) : sliderchange(5);
+  upd_params();
+);
+function kimg(id) (
+  id==0 ? 1 : id==1 ? 1 : id==2 ? 2 : id==3 ? 3 :
+  id==4 ? 3 : id==5 ? 2 : id==6 ? 4 : 5;
+);
+function kfs(id) ( id==7 ? 102 : 154; );
+function kcx(id) (
+  id==0 ? 192 : id==1 ? 853 : id==2 ? 756 : id==3 ? 193 :
+  id==4 ? 410 : id==5 ? 636 : id==6 ? 856 : 294;
+);
+function kcy(id) (
+  id==0 ? 155 : id==1 ? 155 : id==2 ? 300 : id==3 ? 452 :
+  id==4 ? 452 : id==5 ? 452 : id==6 ? 452 : 299;
+);
+function kframe(id) (
+  id==7 ? (slider5|0) :
+  floor((kval(id)-kmin(id))/(kmax(id)-kmin(id))*127+0.5);
+);
+function hit_knob2(mx,my,cx,cy) (
+  (mx-cx)*(mx-cx)+(my-cy)*(my-cy) < 64*64;
+);
+function draw_knob(id) (
+  kk_fr = min(max(kframe(id),0), id==7 ? 4 : 127);
+  kk_fs = kfs(id); kk_cx = kcx(id); kk_cy = kcy(id);
+  gfx_blit(kimg(id), 1, 0, 0, kk_fr*kk_fs, kk_fs, kk_fs,
+            g_px0+kk_cx-kk_fs/2, g_py0+kk_cy-kk_fs/2, kk_fs, kk_fs);
+);
+function draw_tog2(cx, fr) (
+  gfx_blit(6, 1, 0, 0, fr*128, 128, 128, g_px0+cx-64, g_py0+589.5-64, 128, 128);
+);
+
+@slider
+  upd_params();
+
+//---------------------------------------------------------------- @sample
+@sample
+  //--- POWER: save dry for bypass
+  dry0 = spl0; dry1 = spl1;
+  //--- sanitise inputs (kills NaN/Inf before they can propagate)
+  spl0 = spl0 != spl0 ? 0 : min(max(spl0, -4), 4);
+  spl1 = spl1 != spl1 ? 0 : min(max(spl1, -4), 4);
+
+  in_g += (in_t - in_g)*sm_gain;
+  x0 = spl0*in_g;
+  x1 = spl1*in_g;
+  m_in = max(m_in*mdec, max(abs(x0), abs(x1)));
+
+  //================ SUB section ================
+  (sub_byp || !sub_active) ? (
+    y0 = x0; y1 = x1;
+  ) : (
+    // sub-band extraction: LR4 lowpass @160 Hz (two cascaded biquads
+    // per channel), plus explicit LR4 highpass for the highs.
+    t0 = s_b0*x0 + s_b1*s_x1_0 + s_b2*s_x2_0 - s_a1*s_y1_0 - s_a2*s_y2_0;
+    s_x2_0 = s_x1_0; s_x1_0 = x0; s_y2_0 = s_y1_0; s_y1_0 = t0;
+    sb0 = s_b0*t0 + s_b1*s2_x1_0 + s_b2*s2_x2_0 - s_a1*s2_y1_0 - s_a2*s2_y2_0;
+    s2_x2_0 = s2_x1_0; s2_x1_0 = t0; s2_y2_0 = s2_y1_0; s2_y1_0 = sb0;
+    t1 = s_b0*x1 + s_b1*s_x1_1 + s_b2*s_x2_1 - s_a1*s_y1_1 - s_a2*s_y2_1;
+    s_x2_1 = s_x1_1; s_x1_1 = x1; s_y2_1 = s_y1_1; s_y1_1 = t1;
+    sb1 = s_b0*t1 + s_b1*s2_x1_1 + s_b2*s2_x2_1 - s_a1*s2_y1_1 - s_a2*s2_y2_1;
+    s2_x2_1 = s2_x1_1; s2_x1_1 = t1; s2_y2_1 = s2_y1_1; s2_y1_1 = sb1;
+    // highs: LR4 highpass @160 Hz (two cascaded biquads per channel)
+    u0 = sh_b0*x0 + sh_b1*sh_x1_0 + sh_b2*sh_x2_0 - sh_a1*sh_y1_0 - sh_a2*sh_y2_0;
+    sh_x2_0 = sh_x1_0; sh_x1_0 = x0; sh_y2_0 = sh_y1_0; sh_y1_0 = u0;
+    u0 = sh_b0*u0 + sh_b1*sh2_x1_0 + sh_b2*sh2_x2_0 - sh_a1*sh2_y1_0 - sh_a2*sh2_y2_0;
+    sh2_x2_0 = sh2_x1_0; sh2_x1_0 = sh_y1_0; sh2_y2_0 = sh2_y1_0; sh2_y1_0 = u0;
+    h0 = sh_b0*u0 + sh_b1*sh3_x1_0 + sh_b2*sh3_x2_0 - sh_a1*sh3_y1_0 - sh_a2*sh3_y2_0;
+    sh3_x2_0 = sh3_x1_0; sh3_x1_0 = u0; sh3_y2_0 = sh3_y1_0; sh3_y1_0 = h0;
+    u1 = sh_b0*x1 + sh_b1*sh_x1_1 + sh_b2*sh_x2_1 - sh_a1*sh_y1_1 - sh_a2*sh_y2_1;
+    sh_x2_1 = sh_x1_1; sh_x1_1 = x1; sh_y2_1 = sh_y1_1; sh_y1_1 = u1;
+    u1 = sh_b0*u1 + sh_b1*sh2_x1_1 + sh_b2*sh2_x2_1 - sh_a1*sh2_y1_1 - sh_a2*sh2_y2_1;
+    sh2_x2_1 = sh2_x1_1; sh2_x1_1 = sh_y1_1; sh2_y2_1 = sh2_y1_1; sh2_y1_1 = u1;
+    h1 = sh_b0*u1 + sh_b1*sh3_x1_1 + sh_b2*sh3_x2_1 - sh_a1*sh3_y1_1 - sh_a2*sh3_y2_1;
+    sh3_x2_1 = sh3_x1_1; sh3_x1_1 = u1; sh3_y2_1 = sh3_y1_1; sh3_y1_1 = h1;
+
+    // mono-ize: M/S on the sub band, steep HP on the side channel.
+    mid_sb = (sb0 + sb1)*0.5;
+    side_sb = (sb0 - sb1)*0.5;
+    sh = mh_b0*side_sb + mh_b1*h_x1 + mh_b2*h_x2 - mh_a1*h_y1 - mh_a2*h_y2;
+    h_x2 = h_x1; h_x1 = side_sb; h_y2 = h_y1; h_y1 = sh;
+    sh = mh_b0*sh + mh_b1*h2_x1 + mh_b2*h2_x2 - mh_a1*h2_y1 - mh_a2*h2_y2;
+    h2_x2 = h2_x1; h2_x1 = h_y1; h2_y2 = h2_y1; h2_y1 = sh;
+    sh = mh_b0*sh + mh_b1*h3_x1 + mh_b2*h3_x2 - mh_a1*h3_y1 - mh_a2*h3_y2;
+    h3_x2 = h3_x1; h3_x1 = h2_y1; h3_y2 = h3_y1; h3_y1 = sh;
+    sh = mh_b0*sh + mh_b1*h4_x1 + mh_b2*h4_x2 - mh_a1*h4_y1 - mh_a2*h4_y2;
+    h4_x2 = h4_x1; h4_x1 = h3_y1; h4_y2 = h4_y1; h4_y1 = sh;
+    sh = mh_b0*sh + mh_b1*h5_x1 + mh_b2*h5_x2 - mh_a1*h5_y1 - mh_a2*h5_y2;
+    h5_x2 = h5_x1; h5_x1 = h4_y1; h5_y2 = h5_y1; h5_y1 = sh;
+    sh = mh_b0*sh + mh_b1*h6_x1 + mh_b2*h6_x2 - mh_a1*h6_y1 - mh_a2*h6_y2;
+    h6_x2 = h6_x1; h6_x1 = h5_y1; h6_y2 = h6_y1; h6_y1 = sh;
+    // smooth mono blend (click-free engage/disengage)
+    bamt += (mono_t - bamt)*sm_gain;
+    side_out = side_sb + (sh - side_sb)*bamt;
+    r0 = mid_sb + side_out;
+    r1 = mid_sb - side_out;
+
+    // sub enhance: one-pole low shelf @55 Hz blended into the band
+    enh_g += (enh_g_t - enh_g)*sm_gain;
+    e_0 += (1-c_lp55)*(r0 - e_0);
+    e_1 += (1-c_lp55)*(r1 - e_1);
+    b0 = r0 + enh_g*e_0;
+    b1 = r1 + enh_g*e_1;
+
+    // tight: differential-envelope transient shaper on the sub band
+    mid = (b0 + b1)*0.5;
+    ea = abs(mid);
+    ef += (ea - ef)*sm_5ms;
+    es += (ef - es)*sm_50ms;
+    tr = ef - es;
+    tr = max(0, tr - 0.03*es);     // relative threshold kills ripple
+    kk = 1 + punch01*2.5*min(tr/(es + 0.0001), 0.8);
+    kk = min(max(kk, 0.6), 1.6);
+    b0 *= kk; b1 *= kk;
+
+    // perfect-reconstruction mix: explicit LR4 highs + processed lows
+    y0 = h0 + b0;
+    y1 = h1 + b1;
+  );
+
+  //================ AIR section ================
+  air_byp ? (
+    z0 = y0; z1 = y1;
+  ) : (
+    // harshness detector: bandpassed mid, fast/slow envelope
+    mid2 = (y0 + y1)*0.5;
+    bp = p_b0*mid2 + p_b1*p_x1 + p_b2*p_x2 - p_a1*p_y1 - p_a2*p_y2;
+    p_x2 = p_x1; p_x1 = mid2; p_y2 = p_y1; p_y1 = bp;
+    ha = abs(bp);
+    harsh += (ha - harsh)*(ha > harsh ? sm_1ms : sm_113ms);
+    over = max(0, harsh - 0.126);              // -18 dBFS harshness threshold
+    red_t = min(air_db, clean01*over*12);      // sutil: roza la zona, no la aplasta
+    // Curva suave: la reducción crece gentilmente, como mano de seda
+    red_t = red_t * (1 - 0.3*red_t/max(1,air_db));
+    red_db += (red_t - red_db)*(red_t > red_db ? sm_fast : sm_gain);
+
+    // smooth air shelf: dry + g * one-pole-highpassed, g follows Clean
+    g_air = 2.1*(10^((air_db - red_db)/20) - 1);
+    h_0 = c_hp8k*(h_0 + y0 - hx_0); hx_0 = y0;
+    h_1 = c_hp8k*(h_1 + y1 - hx_1); hx_1 = y1;
+    z0 = y0 + g_air*h_0;
+    z1 = y1 + g_air*h_1;
+  );
+
+  // Report combined gain reduction to REAPER's mixer/TCP meters.
+  // (moved to the end of @sample, next to the output limiter)
+
+  //================ VINTAGE DRIVE ================
+  // Skipped entirely unless drive is dialed in: the neutral path stays
+  // bit-transparent (and latency-free). When engaged, the saturation runs
+  // at 2x (short FIR oversampling) and the wet path is delay-compensated
+  // so the dry/wet blend stays phase-coherent.
+  (drv_on && drv01 > 0) ? (
+    // click-free engagement: smooth the wet blend and the push
+    drvw += (drvw_t - drvw)*sm_gain;
+    drvpush += (drvpush_t - drvpush)*sm_gain;
+
+    //--- band split (coherent with Sub Enhance @160 Hz / Air @8 kHz)
+    drv_focus == 0 ? (
+      // SUB: LR4 lowpass @160 Hz (reuses s_ coeffs, own states)
+      t = s_b0*z0 + s_b1*dl_x1_0 + s_b2*dl_x2_0 - s_a1*dl_y1_0 - s_a2*dl_y2_0;
+      dl_x2_0 = dl_x1_0; dl_x1_0 = z0; dl_y2_0 = dl_y1_0; dl_y1_0 = t;
+      db0 = s_b0*t + s_b1*dl2_x1_0 + s_b2*dl2_x2_0 - s_a1*dl2_y1_0 - s_a2*dl2_y2_0;
+      dl2_x2_0 = dl2_x1_0; dl2_x1_0 = t; dl2_y2_0 = dl2_y1_0; dl2_y1_0 = db0;
+      t = s_b0*z1 + s_b1*dl_x1_1 + s_b2*dl_x2_1 - s_a1*dl_y1_1 - s_a2*dl_y2_1;
+      dl_x2_1 = dl_x1_1; dl_x1_1 = z1; dl_y2_1 = dl_y1_1; dl_y1_1 = t;
+      db1 = s_b0*t + s_b1*dl2_x1_1 + s_b2*dl2_x2_1 - s_a1*dl2_y1_1 - s_a2*dl2_y2_1;
+      dl2_x2_1 = dl2_x1_1; dl2_x1_1 = t; dl2_y2_1 = dl2_y1_1; dl2_y1_1 = db1;
+    ) : drv_focus == 2 ? (
+      // AIR: one-pole highpass @8 kHz (same corner as the Air shelf)
+      db0 = c_hp8k*(dah_0 + z0 - dahx_0); dahx_0 = z0; dah_0 = db0;
+      db1 = c_hp8k*(dah_1 + z1 - dahx_1); dahx_1 = z1; dah_1 = db1;
+    ) : (
+      // FULL: whole spectrum
+      db0 = z0; db1 = z1;
+    );
+
+    //--- ch0: polyphase 2x upsample -> saturate -> polyphase downsample
+    // 17-tap halfband: even phase is just the center tap (scaled delay)
+    ye0 = df8*dux3_0;
+    yo0 = df1*db0 + df3*dux0_0 + df5*dux1_0 + df7*dux2_0 + df9*dux3_0 +
+          df11*dux4_0 + df13*dux5_0 + df15*dux6_0;
+    dux6_0 = dux5_0; dux5_0 = dux4_0; dux4_0 = dux3_0; dux3_0 = dux2_0;
+    dux2_0 = dux1_0; dux1_0 = dux0_0; dux0_0 = db0;
+    // saturate at 2x (x2 compensates the polyphase half-gain)
+    se0 = drv_sat(2*ye0);
+    so0 = drv_sat(2*yo0);
+    // downsample: halfband FIR across the interleaved 2x phases
+    de0 = df1*dso0_0 + df3*dso1_0 + df5*dso2_0 + df7*dso3_0 + df8*dse3_0 +
+          df9*dso4_0 + df11*dso5_0 + df13*dso6_0 + df15*dso7_0;
+    dse7_0 = dse6_0; dse6_0 = dse5_0; dse5_0 = dse4_0; dse4_0 = dse3_0;
+    dse3_0 = dse2_0; dse2_0 = dse1_0; dse1_0 = dse0_0; dse0_0 = se0;
+    dso7_0 = dso6_0; dso6_0 = dso5_0; dso5_0 = dso4_0; dso4_0 = dso3_0;
+    dso3_0 = dso2_0; dso2_0 = dso1_0; dso1_0 = dso0_0; dso0_0 = so0;
+    // DC block (asymmetry creates DC)
+    ds0 = de0 - ddc_x0 + ddc_r*ddc_y0; ddc_x0 = de0; ddc_y0 = ds0;
+
+    //--- ch1: same
+    ye1 = df8*dux3_1;
+    yo1 = df1*db1 + df3*dux0_1 + df5*dux1_1 + df7*dux2_1 + df9*dux3_1 +
+          df11*dux4_1 + df13*dux5_1 + df15*dux6_1;
+    dux6_1 = dux5_1; dux5_1 = dux4_1; dux4_1 = dux3_1; dux3_1 = dux2_1;
+    dux2_1 = dux1_1; dux1_1 = dux0_1; dux0_1 = db1;
+    se1 = drv_sat(2*ye1);
+    so1 = drv_sat(2*yo1);
+    de1 = df1*dso0_1 + df3*dso1_1 + df5*dso2_1 + df7*dso3_1 + df8*dse3_1 +
+          df9*dso4_1 + df11*dso5_1 + df13*dso6_1 + df15*dso7_1;
+    dse7_1 = dse6_1; dse6_1 = dse5_1; dse5_1 = dse4_1; dse4_1 = dse3_1;
+    dse3_1 = dse2_1; dse2_1 = dse1_1; dse1_1 = dse0_1; dse0_1 = se1;
+    dso7_1 = dso6_1; dso6_1 = dso5_1; dso5_1 = dso4_1; dso4_1 = dso3_1;
+    dso3_1 = dso2_1; dso2_1 = dso1_1; dso1_1 = dso0_1; dso0_1 = so1;
+    ds1 = de1 - ddc_x1 + ddc_r*ddc_y1; ddc_x1 = de1; ddc_y1 = ds1;
+
+    //--- delay-compensate dry + band by the FIR latency (4 samples @1x)
+    zd0 = dzz3_0;
+    dzz3_0 = dzz2_0; dzz2_0 = dzz1_0; dzz1_0 = dzz0_0; dzz0_0 = z0;
+    bd0 = dbb3_0;
+    dbb3_0 = dbb2_0; dbb2_0 = dbb1_0; dbb1_0 = dbb0_0; dbb0_0 = db0;
+    zd1 = dzz3_1;
+    dzz3_1 = dzz2_1; dzz2_1 = dzz1_1; dzz1_1 = dzz0_1; dzz0_1 = z1;
+    bd1 = dbb3_1;
+    dbb3_1 = dbb2_1; dbb2_1 = dbb1_1; dbb1_1 = dbb0_1; dbb0_1 = db1;
+
+    //--- wet/dry: add only the saturation difference (transparent at w=0)
+    z0 = zd0 + drvw*(ds0 - bd0);
+    z1 = zd1 + drvw*(ds1 - bd1);
+  );
+
+  //--- output trim + sanitise
+  out_g += (out_t - out_g)*sm_gain;
+  o0 = z0*out_g; o1 = z1*out_g;
+  o0 = o0 != o0 ? 0 : min(max(o0, -4), 4);
+  o1 = o1 != o1 ? 0 : min(max(o1, -4), 4);
+  //--- output safety limiter: fixed -1 dBFS ceiling on the FINAL output.
+  // Sits after the output trim: with Safety ON the plugin can never clip,
+  // no matter how hard the sub/air/drive stages are pushed.
+  pk = max(abs(o0), abs(o1));
+  tgt = (safety_on && pk > 0.891250938) ? 0.891250938/pk : 1;
+  gr = tgt < gr ? tgt : gr + (tgt - gr)*sm_100ms;  // instant atk / 100 ms rel
+  o0 *= gr; o1 *= gr;
+  gr_disp += (gr - gr_disp)*sm_fast;
+  // report combined GR (limiter + de-harsh) to REAPER's mixer/TCP meters:
+  // ext_gr_meter is REAPER's documented mechanism, value in dB, <= 0
+  ext_gr_meter = min(0, 20*log10(max(gr, 0.00000001)) - red_t);
+  //--- startup fade: 15 ms ramp on load/insert masks the cold-start
+  // transient (limiter gr slams from 1 on the first hot sample; filter
+  // states charge from zero). Inaudible, runs once per @init.
+  startup = min(1, startup + 1/(0.015*srate));
+  o0 *= startup; o1 *= startup;
+  m_out = max(m_out*mdec, max(abs(o0), abs(o1)));
+  //--- POWER bypass con crossfade de 25ms (click-free)
+  // bypass_mix: 0=wet (POWER ON), 1=dry (POWER OFF)
+  bypass_target = (slider15 > 0.5) ? 0 : 1;
+  bypass_mix += (bypass_target - bypass_mix) * min(1, 1/(0.025*srate));
+  spl0 = o0*(1-bypass_mix) + dry0*bypass_mix;
+  spl1 = o1*(1-bypass_mix) + dry1*bypass_mix;
+
+  cnt += 1;
+  cnt >= 1024 ? ( cnt = 0; flush_all(); );
+
+//---------------------------------------------------------------- @gfx
+// Design space 720 x 580; everything is drawn scaled by sc so the whole
+// interface rescales proportionally with the window.
+//---------------------------------------------------------------- @gfx — Juan's panel (fixed 1024x700)
+  //--- POWER OFF: VU con apagado gradual (el bypass de audio está en @sample)
+  slider15 < 0.5 ? (
+    m_in *= 0.999; m_out *= 0.999; m_gr *= 0.999;
+    gr_disp = max(gr_disp*0.999, 0.0000001);
+  );
+
+@gfx 1024 700
+  g_px0 = 0; g_py0 = 0;
+  gfx_blit(0, 1, 0, 0,0,1024,700, 0,0,1024,700);
+
+  g_mx = mouse_x - g_px0; g_my = mouse_y - g_py0;
+  g_mc = mouse_cap & 1;
+
+  //================ mouse ================
+  g_mc && !g_lmc ? (
+    g_drag = -1;
+    // toggles (2-pos): 0=SUB BYPASS 1=SAFETY 2=AIR BYPASS 3=DRIVE POWER
+    g_t = 0; while (g_t < 4) (
+      g_tx = g_t==0 ? 192 : g_t==1 ? 409 : g_t==2 ? 635.5 : 745.5;
+      g_mx >= g_tx-64 && g_mx < g_tx+64 && g_my >= 525 && g_my < 654 ? (
+        g_t==0 ? ( slider2 = 1-(slider2>0.5); sliderchange(2); ) :
+        g_t==1 ? ( slider6 = 1-(slider6>0.5); sliderchange(6); ) :
+        g_t==2 ? ( slider7 = 1-(slider7>0.5); sliderchange(7); ) :
+                 ( slider13 = 1-(slider13>0.5); sliderchange(13); );
+        upd_params();
+      );
+      g_t += 1;
+    );
+    // MODE 3-pos drag (LO-MID/FULL/HI-MID -> Drive Focus Sub/Full/Air)
+    g_mx >= 857.5-64 && g_mx < 857.5+64 && g_my >= 525 && g_my < 654 ? (
+      g_modedrag = 1;
+    );
+    // IN/GR/OUT LED radio (only one active)
+    g_b = 0; while (g_b < 3) (
+      g_bx = g_b==0 ? 494 : g_b==1 ? 522 : 552;
+      (g_mx-g_bx)*(g_mx-g_bx)+(g_my-422)*(g_my-422) < 14*14 ? (
+        slider14 = g_b;  // 0=IN, 1=GR, 2=OUT (direct)
+        sliderchange(14);
+      );
+      g_b += 1;
+    );
+    // POWER toggle (vertical: up=ON, down=OFF)
+    (g_mx-526)*(g_mx-526)+(g_my-529)*(g_my-529) < 32*32 ? (
+      slider15 = slider15 > 0.5 ? 0 : 1;
+      sliderchange(15);
+    );
+    // knobs (drag)
+    g_k = 0; while (g_k < 8) (
+      hit_knob2(g_mx,g_my,kcx(g_k),kcy(g_k)) ? (
+        (mouse_cap & 12) ? kset(g_k, kdef(g_k)) : (
+          g_drag = g_k; gd_y0 = g_my; gd_v0 = kval(g_k);
+        );
+      );
+      g_k += 1;
+    );
+  );
+  g_mc && g_drag >= 0 ? (
+    kset(g_drag, gd_v0 + (gd_y0-g_my)/150*(kmax(g_drag)-kmin(g_drag)));
+  );
+  g_mc && g_modedrag ? (
+    g_mp = g_mx < 857.5-25 ? 0 : g_mx > 857.5+25 ? 2 : 1;
+    g_mp != slider12 ? (
+      slider12 = g_mp; sliderchange(12); upd_params();
+    );
+  );
+  !g_mc ? ( g_drag = -1; g_modedrag = 0; );
+  g_lmc = g_mc;
+
+  //================ draw ================
+  g_k = 0; while (g_k < 8) ( draw_knob(g_k); g_k += 1; );
+  draw_tog2(192, slider2>0.5 ? 1 : 0);
+  draw_tog2(409, slider6<0.5 ? 1 : 0);
+  draw_tog2(635.5, slider7>0.5 ? 1 : 0);
+  draw_tog2(745.5, slider13>0.5 ? 1 : 0);
+  gfx_blit(7, 1, 0, 0, (slider12|0)*128, 128, 128, g_px0+857.5-64, g_py0+589.5-64, 128, 128);
+
+  // VU: off image when POWER off, else face + needle
+  (slider15 > 0.5) ? (
+    gfx_blit(8, 1, 0, 0,0,218,218, g_px0+521-109, g_py0+253-109, 218,218);
+  ) : (
+    gfx_blit(12, 1, 0, 0,0,218,218, g_px0+521-109, g_py0+253-109, 218,218);
+  );
+  slider14==0 ? g_vdb = 20*log10(max(m_in,0.0000001)) :
+  slider14==1 ? g_vdb = 20*log10(max(gr_disp,0.0000001)) - red_db :
+                g_vdb = 20*log10(max(m_out,0.0000001));
+  g_vdb = min(max(g_vdb,-20),3);
+  g_vdb <= 0 ? g_vang = 171-(g_vdb+20)*4.05 : g_vang = 90-g_vdb*26.333;
+  g_var = g_vang*$pi/180;
+  (slider15 > 0.5) ? (
+    g_vpx = g_px0+521; g_vpy = g_py0+274;
+    gfx_set(0.10,0.08,0.06);
+    gfx_line(g_vpx, g_vpy, g_vpx+95*cos(g_var), g_vpy-95*sin(g_var), 1);
+    gfx_set(0.16,0.13,0.10); gfx_circle(g_vpx, g_vpy, 9, 1, 1);
+    gfx_set(0.55,0.48,0.38); gfx_circle(g_vpx-2, g_vpy-2, 3, 1, 1);
+  );
+
+  // IN/GR/OUT LEDs: 2-frame (0=off, 1=on), radio behavior
+  g_b = 0; while (g_b < 3) (
+    g_bx = g_b==0 ? 494 : g_b==1 ? 522 : 552;
+    g_led_fr = ((slider15 > 0.5) && (slider14 == g_b)) ? 1 : 0;
+    gfx_blit(10, 1, 0, 0, g_led_fr*20, 20, 20, g_px0+g_bx-10, g_py0+422-10, 20, 20);
+    g_b += 1;
+  );
+  // DE-HARSH LED: reacciona a la reducción real (red_db) y presencia de audio
+  g_dh_target = (slider15 > 0.5 && red_db > 0.001 && m_in > 0.001) ? min(127, red_db * 40 * (slider9 / 100)) : 0;
+  g_fdh += (g_dh_target - g_fdh) * 0.25;
+  gfx_blit(11, 1, 0, 0, floor(max(0,min(127,g_fdh)))*48, 48, 48, g_px0+904-24, g_py0+300-24, 48, 48);
+  // POWER toggle (up=ON, down=OFF)
+  gfx_blit(9, 1, 0, 0, (slider15>0.5?0:1)*128, 128, 128, g_px0+526-64, g_py0+529-64, 128, 128);
