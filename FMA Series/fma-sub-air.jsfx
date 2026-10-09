@@ -1,6 +1,8 @@
-// @version 1.5
+// @version 1.5.1
 // @author Free Mix Audio
 // @changelog
+//   v1.5.1 (2026-10-09)
+//     - VU Meter Mode ahora inicia en IN por defecto (antes GR).
 //   v1.5 (2026-10-09)
 //     - Display name simplificado a "FMA Sub-Air" (sin número de versión)
 //       para evitar conflictos en futuras actualizaciones. La versión
@@ -104,7 +106,7 @@ slider10:0<-12,12,0.1>Output Gain (dB)
 slider11:0<0,100,1>Drive (%) - vintage saturation
 slider12:1<0,2,1{Sub,Full,Air}>Drive Focus
 slider13:1<0,1,1{Off,On}>Drive Power
-slider14:1<0,2,1{IN,GR,OUT}>VU Meter Mode
+slider14:0<0,2,1{IN,GR,OUT}>VU Meter Mode
 slider15:1<0,1,1{Off,On}>Power
 
 // pi is NOT a built-in EEL2 constant (reads as 0); stock plugins define
