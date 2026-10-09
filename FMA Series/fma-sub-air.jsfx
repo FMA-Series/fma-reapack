@@ -1,4 +1,4 @@
-// @version 1.5.1
+// @version 1.5.2
 // @author Free Mix Audio
 // @changelog
 //   v1.5.1 (2026-10-09)
@@ -713,13 +713,12 @@ function draw_tog2(cx, fr) (
 // Design space 720 x 580; everything is drawn scaled by sc so the whole
 // interface rescales proportionally with the window.
 //---------------------------------------------------------------- @gfx — Juan's panel (fixed 1024x700)
+@gfx 1024 700
   //--- POWER OFF: VU con apagado gradual (el bypass de audio está en @sample)
   slider15 < 0.5 ? (
     m_in *= 0.999; m_out *= 0.999; m_gr *= 0.999;
     gr_disp = max(gr_disp*0.999, 0.0000001);
   );
-
-@gfx 1024 700
   g_px0 = 0; g_py0 = 0;
   gfx_blit(0, 1, 0, 0,0,1024,700, 0,0,1024,700);
 
