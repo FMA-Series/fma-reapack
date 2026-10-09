@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" commit="74e28cfb68992da057798a613e310e7a83bc8b29" name="Free Mix Audio">
+<index version="1" commit="ffc5446f2c203f5055cdfa81c102f522df3c6dd8" name="Free Mix Audio">
   <category name="FMA Series">
     <reapack name="fma-sub-air.jsfx" type="effect">
       <metadata>
@@ -61,6 +61,28 @@ v1.2
         <source file="fma-sub-air_gfx/led_amarillo_fs.png">https://github.com/FMA-Series/fma-reapack/raw/74e28cfb68992da057798a613e310e7a83bc8b29/FMA%20Series/fma-sub-air_gfx/led_amarillo_fs.png</source>
         <source file="fma-sub-air_gfx/vu_face.png">https://github.com/FMA-Series/fma-reapack/raw/74e28cfb68992da057798a613e310e7a83bc8b29/FMA%20Series/fma-sub-air_gfx/vu_face.png</source>
         <source file="fma-sub-air_gfx/vu_off.png">https://github.com/FMA-Series/fma-reapack/raw/74e28cfb68992da057798a613e310e7a83bc8b29/FMA%20Series/fma-sub-air_gfx/vu_off.png</source>
+      </version>
+      <version name="1.5.1" author="Free Mix Audio" time="2026-10-09T04:14:18Z">
+        <changelog><![CDATA[v1.5.1 (2026-10-09)
+  - VU Meter Mode ahora inicia en IN por defecto (antes GR).
+v1.5 (2026-10-09)
+  - Display name simplificado a "FMA Sub-Air" (sin número de versión)
+    para evitar conflictos en futuras actualizaciones. La versión
+    se sigue controlando vía @version para ReaPack.
+v1.4 (2026-10-04)
+  - NEW: Vintage Drive saturator — warm tube-style even-harmonic
+    saturation ("silk" voicing: asymmetric triode-like curve, ultra-soft
+    knee, subtlety-first). Red DRIVE knob (0% = transparent) plus
+    FOCUS selector (Sub / Full / Air) so the user chooses which band
+    gets saturated. 2x oversampled saturation path for alias-free
+    harmonics. Drive power switch (ON = processing).
+v1.3 (2026-10-01)
+  - GUI controls now update the DSP in real time (no need to press play)
+  - Per-section bypass switches respond instantly
+v1.2
+  - Initial FMA Series release]]></changelog>
+        <source>https://github.com/FMA-Series/fma-reapack/raw/ffc5446f2c203f5055cdfa81c102f522df3c6dd8/FMA%20Series/fma-sub-air.jsfx</source>
+        <source file="fma-sub-air_gfx/vu_off.png">https://github.com/FMA-Series/fma-reapack/raw/ffc5446f2c203f5055cdfa81c102f522df3c6dd8/FMA%20Series/fma-sub-air_gfx/vu_off.png</source>
       </version>
     </reapack>
   </category>
