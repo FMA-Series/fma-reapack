@@ -13,6 +13,8 @@
 //     - The Drive selector formerly called MODE is now called
 //       FOCUS (LO-MID/FULL/HI-MID), to avoid confusion with
 //       the new MODE switch (BUS/INST).
+//     - Fixed GR reporting: ext_gr_meter now reports 0 dB when POWER
+//       is OFF (was still showing gain reduction during bypass).
 //   v1.5.7 (2026-10-10)
 //     - Fixed sub crossover: the highpass section used 3 biquads
 //       (6th-order) instead of 2 (4th-order), breaking the Linkwitz-Riley
