@@ -10,6 +10,9 @@
 //         threshold (creative tool, LED responds on normal material),
 //         warmer drive voicing (stronger even-harmonic emphasis) —
 //         for individual instruments and tracks.
+//     - The Drive selector formerly called MODE is now called
+//       FOCUS (LO-MID/FULL/HI-MID), to avoid confusion with
+//       the new MODE switch (BUS/INST).
 //   v1.5.7 (2026-10-10)
 //     - Fixed sub crossover: the highpass section used 3 biquads
 //       (6th-order) instead of 2 (4th-order), breaking the Linkwitz-Riley
