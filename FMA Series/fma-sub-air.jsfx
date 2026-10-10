@@ -734,7 +734,7 @@ function draw_tog2(cx, fr) (
   gr_disp += (gr - gr_disp)*sm_fast;
   // report combined GR (limiter + de-harsh) to REAPER's mixer/TCP meters:
   // ext_gr_meter is REAPER's documented mechanism, value in dB, <= 0
-  ext_gr_meter = min(0, 20*log10(max(gr, 0.00000001)) - red_t);
+  ext_gr_meter = (slider15 > 0.5) ? min(0, 20*log10(max(gr, 0.00000001)) - red_t) : 0;
   //--- startup fade: 15 ms ramp on load/insert masks the cold-start
   // transient (limiter gr slams from 1 on the first hot sample; filter
   // states charge from zero). Inaudible, runs once per @init.
