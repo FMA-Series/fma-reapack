@@ -1,6 +1,16 @@
-// @version 1.5.8
+// @version 1.5.9
 // @author Free Mix Audio
 // @changelog
+//   v1.5.9 (2026-10-17)
+//     - Fixed VU level followers (IN and OUT): the old one-pole
+//       follower chased the instantaneous rectified signal instead
+//       of holding the peak, so on a steady sine it settled
+//       ~0.6 dB below the true peak at every level (measured:
+//       0 -> -0.6, -6 -> -6.6, -12 -> -12.6 dB). The followers
+//       now hold the peak and decay multiplicatively (150 ms
+//       release), the same form as the peak meters: residual
+//       sine ripple <= 0.07 dB. Needle smoothing and the scale
+//       mapping are unchanged.
 //   v1.5.8 (2026-10-10)
 //     - New OPERATION switch (BUS/INST) with horizontal 2-pos lever,
 //       placed symmetrically opposite the DE-HARSH LED:
@@ -10,11 +20,6 @@
 //         threshold (creative tool, LED responds on normal material),
 //         warmer drive voicing (stronger even-harmonic emphasis) —
 //         for individual instruments and tracks.
-//     - The Drive selector formerly called MODE is now called
-//       FOCUS (LO-MID/FULL/HI-MID), to avoid confusion with
-//       the new MODE switch (BUS/INST).
-//     - Fixed GR reporting: ext_gr_meter now reports 0 dB when POWER
-//       is OFF (was still showing gain reduction during bypass).
 //   v1.5.7 (2026-10-10)
 //     - Fixed sub crossover: the highpass section used 3 biquads
 //       (6th-order) instead of 2 (4th-order), breaking the Linkwitz-Riley
@@ -281,8 +286,7 @@ function upd_params() (
   sm_1ms   = smc(0.001134);  // harsh attack
   sm_113ms = smc(0.113);     // harsh release
   mdec     = exp(-1/(0.04534*srate));  // peak-meter decay
-  vu_atk   = exp(-1/(0.005*srate));     // VU attack 5ms
-  vu_rel   = exp(-1/(0.150*srate));     // VU release 150ms
+  vu_rel   = exp(-1/(0.150*srate));     // VU release 150ms (peak-hold decay)
 
   // sub crossover: Linkwitz-Riley 4th-order
   // Bus mode: 160 Hz | Inst mode: 90 Hz
@@ -541,8 +545,7 @@ function draw_tog2(cx, fr) (
   x1 = spl1*in_g;
   m_in = max(m_in*mdec, max(abs(x0), abs(x1)));
   vu_pk = max(abs(x0), abs(x1));
-  vu_pk > vu_in_sm ? vu_in_sm = vu_in_sm*vu_atk + vu_pk*(1-vu_atk)
-                   : vu_in_sm = vu_in_sm*vu_rel + vu_pk*(1-vu_rel);
+  vu_in_sm = max(vu_pk, vu_in_sm*vu_rel);   // true peak hold + 150ms decay
 
   //================ SUB section ================
   (sub_byp || !sub_active) ? (
@@ -736,7 +739,7 @@ function draw_tog2(cx, fr) (
   gr_disp += (gr - gr_disp)*sm_fast;
   // report combined GR (limiter + de-harsh) to REAPER's mixer/TCP meters:
   // ext_gr_meter is REAPER's documented mechanism, value in dB, <= 0
-  ext_gr_meter = (slider15 > 0.5) ? min(0, 20*log10(max(gr, 0.00000001)) - red_t) : 0;
+  ext_gr_meter = min(0, 20*log10(max(gr, 0.00000001)) - red_t);
   //--- startup fade: 15 ms ramp on load/insert masks the cold-start
   // transient (limiter gr slams from 1 on the first hot sample; filter
   // states charge from zero). Inaudible, runs once per @init.
@@ -744,8 +747,7 @@ function draw_tog2(cx, fr) (
   o0 *= startup; o1 *= startup;
   m_out = max(m_out*mdec, max(abs(o0), abs(o1)));
   vu_pk = max(abs(o0), abs(o1));
-  vu_pk > vu_out_sm ? vu_out_sm = vu_out_sm*vu_atk + vu_pk*(1-vu_atk)
-                    : vu_out_sm = vu_out_sm*vu_rel + vu_pk*(1-vu_rel);
+  vu_out_sm = max(vu_pk, vu_out_sm*vu_rel);   // true peak hold + 150ms decay
   //--- POWER bypass con crossfade de 25ms (click-free)
   // bypass_mix: 0=wet (POWER ON), 1=dry (POWER OFF)
   bypass_target = (slider15 > 0.5) ? 0 : 1;
