@@ -110,7 +110,7 @@ v1.2
         <source file="fma-sub-air_gfx/led_verde_fs.png">https://github.com/FMA-Series/fma-reapack/raw/08feb2c105cdca3c5136c426efe4741e6b8e2ffc/FMA%20Series/fma-sub-air_gfx/led_verde_fs.png</source>
         <source file="fma-sub-air_gfx/led_amarillo_fs.png">https://github.com/FMA-Series/fma-reapack/raw/08feb2c105cdca3c5136c426efe4741e6b8e2ffc/FMA%20Series/fma-sub-air_gfx/led_amarillo_fs.png</source>
         <source file="fma-sub-air_gfx/vu_face.png">https://github.com/FMA-Series/fma-reapack/raw/08feb2c105cdca3c5136c426efe4741e6b8e2ffc/FMA%20Series/fma-sub-air_gfx/vu_face.png</source>
-        <source file="fma-sub-air_gfx/vu_off.png">https://github.com/FMA-Series/fma-reapack/raw/08feb2c105cdca3c5136c426efe4741e6b8e2ffc/FMA%20Series/fma-sub-air_gfx/vu_off.png</source>
+        <source file="fma-sub-air_gfx/vu_off.png">https://github.com/FMA-Series/fma-reapack/raw/00590cf9998e422eeab9928866f2fe1e6c5753c6/FMA%20Series/fma-sub-air_gfx/vu_off.png</source>
       </version>
     </reapack>
   </category>
