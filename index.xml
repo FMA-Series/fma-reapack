@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" commit="08feb2c105cdca3c5136c426efe4741e6b8e2ffc" name="Free Mix Audio">
+<index version="1" commit="656468ffc80d7c1b2c25b3a6ab7be034f9364d53" name="Free Mix Audio">
   <category name="FMA Series">
-    <reapack name="fma-sub-air.jsfx" type="effect">
+    <reapack name="fma-sub-air.jsfx" type="effect" desc="FMA Sub-Air">
       <metadata>
         <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
 {\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
@@ -110,7 +110,7 @@ v1.2
         <source file="fma-sub-air_gfx/led_verde_fs.png">https://github.com/FMA-Series/fma-reapack/raw/08feb2c105cdca3c5136c426efe4741e6b8e2ffc/FMA%20Series/fma-sub-air_gfx/led_verde_fs.png</source>
         <source file="fma-sub-air_gfx/led_amarillo_fs.png">https://github.com/FMA-Series/fma-reapack/raw/08feb2c105cdca3c5136c426efe4741e6b8e2ffc/FMA%20Series/fma-sub-air_gfx/led_amarillo_fs.png</source>
         <source file="fma-sub-air_gfx/vu_face.png">https://github.com/FMA-Series/fma-reapack/raw/08feb2c105cdca3c5136c426efe4741e6b8e2ffc/FMA%20Series/fma-sub-air_gfx/vu_face.png</source>
-        <source file="fma-sub-air_gfx/vu_off.png">https://github.com/FMA-Series/fma-reapack/raw/00590cf9998e422eeab9928866f2fe1e6c5753c6/FMA%20Series/fma-sub-air_gfx/vu_off.png</source>
+        <source file="fma-sub-air_gfx/vu_off.png">https://github.com/FMA-Series/fma-reapack/raw/08feb2c105cdca3c5136c426efe4741e6b8e2ffc/FMA%20Series/fma-sub-air_gfx/vu_off.png</source>
       </version>
     </reapack>
   </category>
