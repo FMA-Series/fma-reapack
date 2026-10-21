@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" commit="1523d89b71f071eac3c96a764a78e52acb66e13b" name="Free Mix Audio">
+<index version="1" commit="08feb2c105cdca3c5136c426efe4741e6b8e2ffc" name="Free Mix Audio">
   <category name="FMA Series">
     <reapack name="fma-sub-air.jsfx" type="effect">
       <metadata>
@@ -14,344 +14,29 @@
         <link rel="website">https://www.facebook.com/freemixaudio</link>
         <link rel="screenshot">https://raw.githubusercontent.com/FMA-Series/fma-reapack/main/screenshots/fma-sub-air.png</link>
       </metadata>
-      <version name="1.4" author="Free Mix Audio" time="2026-10-09T03:14:47Z">
-        <changelog><![CDATA[v1.4 (2026-10-04)
-  - NEW: Vintage Drive saturator — warm tube-style even-harmonic
-    saturation ("silk" voicing: asymmetric triode-like curve, ultra-soft
-    knee, subtlety-first). Red DRIVE knob (0% = transparent) plus
-    FOCUS selector (Sub / Full / Air) so the user chooses which band
-    gets saturated. 2x oversampled saturation path for alias-free
-    harmonics. Drive power switch (ON = processing).
-v1.3 (2026-10-01)
-  - GUI controls now update the DSP in real time (no need to press play)
-  - Per-section bypass switches respond instantly
-v1.2
-  - Initial FMA Series release]]></changelog>
-        <source>https://github.com/FMA-Series/fma-reapack/raw/1f5f4ce3a79dc9e2eee339923ba2cf5af4159916/FMA%20Series/fma-sub-air.jsfx</source>
-        <source file="fma-sub-air_gfx/panel.png">https://github.com/FMA-Series/fma-reapack/raw/1f5f4ce3a79dc9e2eee339923ba2cf5af4159916/FMA%20Series/fma-sub-air_gfx/panel.png</source>
-        <source file="fma-sub-air_gfx/knob_marron.png">https://github.com/FMA-Series/fma-reapack/raw/1f5f4ce3a79dc9e2eee339923ba2cf5af4159916/FMA%20Series/fma-sub-air_gfx/knob_marron.png</source>
-        <source file="fma-sub-air_gfx/knob_hueso.png">https://github.com/FMA-Series/fma-reapack/raw/1f5f4ce3a79dc9e2eee339923ba2cf5af4159916/FMA%20Series/fma-sub-air_gfx/knob_hueso.png</source>
-        <source file="fma-sub-air_gfx/knob_naranja.png">https://github.com/FMA-Series/fma-reapack/raw/1f5f4ce3a79dc9e2eee339923ba2cf5af4159916/FMA%20Series/fma-sub-air_gfx/knob_naranja.png</source>
-        <source file="fma-sub-air_gfx/knob_rojo.png">https://github.com/FMA-Series/fma-reapack/raw/1f5f4ce3a79dc9e2eee339923ba2cf5af4159916/FMA%20Series/fma-sub-air_gfx/knob_rojo.png</source>
-        <source file="fma-sub-air_gfx/knob_monobelow.png">https://github.com/FMA-Series/fma-reapack/raw/1f5f4ce3a79dc9e2eee339923ba2cf5af4159916/FMA%20Series/fma-sub-air_gfx/knob_monobelow.png</source>
-        <source file="fma-sub-air_gfx/toggle_2pos.png">https://github.com/FMA-Series/fma-reapack/raw/1f5f4ce3a79dc9e2eee339923ba2cf5af4159916/FMA%20Series/fma-sub-air_gfx/toggle_2pos.png</source>
-        <source file="fma-sub-air_gfx/mode_3pos.png">https://github.com/FMA-Series/fma-reapack/raw/1f5f4ce3a79dc9e2eee339923ba2cf5af4159916/FMA%20Series/fma-sub-air_gfx/mode_3pos.png</source>
-        <source file="fma-sub-air_gfx/power_2pos.png">https://github.com/FMA-Series/fma-reapack/raw/1f5f4ce3a79dc9e2eee339923ba2cf5af4159916/FMA%20Series/fma-sub-air_gfx/power_2pos.png</source>
-        <source file="fma-sub-air_gfx/led_verde_fs.png">https://github.com/FMA-Series/fma-reapack/raw/1f5f4ce3a79dc9e2eee339923ba2cf5af4159916/FMA%20Series/fma-sub-air_gfx/led_verde_fs.png</source>
-        <source file="fma-sub-air_gfx/led_amarillo_fs.png">https://github.com/FMA-Series/fma-reapack/raw/1f5f4ce3a79dc9e2eee339923ba2cf5af4159916/FMA%20Series/fma-sub-air_gfx/led_amarillo_fs.png</source>
-        <source file="fma-sub-air_gfx/vu_face.png">https://github.com/FMA-Series/fma-reapack/raw/1f5f4ce3a79dc9e2eee339923ba2cf5af4159916/FMA%20Series/fma-sub-air_gfx/vu_face.png</source>
-        <source file="fma-sub-air_gfx/vu_off.png">https://github.com/FMA-Series/fma-reapack/raw/1f5f4ce3a79dc9e2eee339923ba2cf5af4159916/FMA%20Series/fma-sub-air_gfx/vu_off.png</source>
-      </version>
-      <version name="1.5" author="Free Mix Audio" time="2026-10-09T03:39:15Z">
-        <changelog><![CDATA[v1.5 (2026-10-09)
-  - Display name simplificado a "FMA Sub-Air" (sin número de versión)
-    para evitar conflictos en futuras actualizaciones. La versión
-    se sigue controlando vía @version para ReaPack.
-v1.4 (2026-10-04)
-  - NEW: Vintage Drive saturator — warm tube-style even-harmonic
-    saturation ("silk" voicing: asymmetric triode-like curve, ultra-soft
-    knee, subtlety-first). Red DRIVE knob (0% = transparent) plus
-    FOCUS selector (Sub / Full / Air) so the user chooses which band
-    gets saturated. 2x oversampled saturation path for alias-free
-    harmonics. Drive power switch (ON = processing).
-v1.3 (2026-10-01)
-  - GUI controls now update the DSP in real time (no need to press play)
-  - Per-section bypass switches respond instantly
-v1.2
-  - Initial FMA Series release]]></changelog>
-        <source>https://github.com/FMA-Series/fma-reapack/raw/74e28cfb68992da057798a613e310e7a83bc8b29/FMA%20Series/fma-sub-air.jsfx</source>
-        <source file="fma-sub-air_gfx/panel.png">https://github.com/FMA-Series/fma-reapack/raw/74e28cfb68992da057798a613e310e7a83bc8b29/FMA%20Series/fma-sub-air_gfx/panel.png</source>
-        <source file="fma-sub-air_gfx/knob_marron.png">https://github.com/FMA-Series/fma-reapack/raw/74e28cfb68992da057798a613e310e7a83bc8b29/FMA%20Series/fma-sub-air_gfx/knob_marron.png</source>
-        <source file="fma-sub-air_gfx/knob_hueso.png">https://github.com/FMA-Series/fma-reapack/raw/74e28cfb68992da057798a613e310e7a83bc8b29/FMA%20Series/fma-sub-air_gfx/knob_hueso.png</source>
-        <source file="fma-sub-air_gfx/knob_naranja.png">https://github.com/FMA-Series/fma-reapack/raw/74e28cfb68992da057798a613e310e7a83bc8b29/FMA%20Series/fma-sub-air_gfx/knob_naranja.png</source>
-        <source file="fma-sub-air_gfx/knob_rojo.png">https://github.com/FMA-Series/fma-reapack/raw/74e28cfb68992da057798a613e310e7a83bc8b29/FMA%20Series/fma-sub-air_gfx/knob_rojo.png</source>
-        <source file="fma-sub-air_gfx/knob_monobelow.png">https://github.com/FMA-Series/fma-reapack/raw/74e28cfb68992da057798a613e310e7a83bc8b29/FMA%20Series/fma-sub-air_gfx/knob_monobelow.png</source>
-        <source file="fma-sub-air_gfx/toggle_2pos.png">https://github.com/FMA-Series/fma-reapack/raw/74e28cfb68992da057798a613e310e7a83bc8b29/FMA%20Series/fma-sub-air_gfx/toggle_2pos.png</source>
-        <source file="fma-sub-air_gfx/mode_3pos.png">https://github.com/FMA-Series/fma-reapack/raw/74e28cfb68992da057798a613e310e7a83bc8b29/FMA%20Series/fma-sub-air_gfx/mode_3pos.png</source>
-        <source file="fma-sub-air_gfx/power_2pos.png">https://github.com/FMA-Series/fma-reapack/raw/74e28cfb68992da057798a613e310e7a83bc8b29/FMA%20Series/fma-sub-air_gfx/power_2pos.png</source>
-        <source file="fma-sub-air_gfx/led_verde_fs.png">https://github.com/FMA-Series/fma-reapack/raw/74e28cfb68992da057798a613e310e7a83bc8b29/FMA%20Series/fma-sub-air_gfx/led_verde_fs.png</source>
-        <source file="fma-sub-air_gfx/led_amarillo_fs.png">https://github.com/FMA-Series/fma-reapack/raw/74e28cfb68992da057798a613e310e7a83bc8b29/FMA%20Series/fma-sub-air_gfx/led_amarillo_fs.png</source>
-        <source file="fma-sub-air_gfx/vu_face.png">https://github.com/FMA-Series/fma-reapack/raw/74e28cfb68992da057798a613e310e7a83bc8b29/FMA%20Series/fma-sub-air_gfx/vu_face.png</source>
-        <source file="fma-sub-air_gfx/vu_off.png">https://github.com/FMA-Series/fma-reapack/raw/74e28cfb68992da057798a613e310e7a83bc8b29/FMA%20Series/fma-sub-air_gfx/vu_off.png</source>
-      </version>
-      <version name="1.5.1" author="Free Mix Audio" time="2026-10-09T04:14:18Z">
-        <changelog><![CDATA[v1.5.1 (2026-10-09)
-  - VU Meter Mode ahora inicia en IN por defecto (antes GR).
-v1.5 (2026-10-09)
-  - Display name simplificado a "FMA Sub-Air" (sin número de versión)
-    para evitar conflictos en futuras actualizaciones. La versión
-    se sigue controlando vía @version para ReaPack.
-v1.4 (2026-10-04)
-  - NEW: Vintage Drive saturator — warm tube-style even-harmonic
-    saturation ("silk" voicing: asymmetric triode-like curve, ultra-soft
-    knee, subtlety-first). Red DRIVE knob (0% = transparent) plus
-    FOCUS selector (Sub / Full / Air) so the user chooses which band
-    gets saturated. 2x oversampled saturation path for alias-free
-    harmonics. Drive power switch (ON = processing).
-v1.3 (2026-10-01)
-  - GUI controls now update the DSP in real time (no need to press play)
-  - Per-section bypass switches respond instantly
-v1.2
-  - Initial FMA Series release]]></changelog>
-        <source>https://github.com/FMA-Series/fma-reapack/raw/ffc5446f2c203f5055cdfa81c102f522df3c6dd8/FMA%20Series/fma-sub-air.jsfx</source>
-        <source file="fma-sub-air_gfx/panel.png">https://github.com/FMA-Series/fma-reapack/raw/ffc5446f2c203f5055cdfa81c102f522df3c6dd8/FMA%20Series/fma-sub-air_gfx/panel.png</source>
-        <source file="fma-sub-air_gfx/knob_marron.png">https://github.com/FMA-Series/fma-reapack/raw/ffc5446f2c203f5055cdfa81c102f522df3c6dd8/FMA%20Series/fma-sub-air_gfx/knob_marron.png</source>
-        <source file="fma-sub-air_gfx/knob_hueso.png">https://github.com/FMA-Series/fma-reapack/raw/ffc5446f2c203f5055cdfa81c102f522df3c6dd8/FMA%20Series/fma-sub-air_gfx/knob_hueso.png</source>
-        <source file="fma-sub-air_gfx/knob_naranja.png">https://github.com/FMA-Series/fma-reapack/raw/ffc5446f2c203f5055cdfa81c102f522df3c6dd8/FMA%20Series/fma-sub-air_gfx/knob_naranja.png</source>
-        <source file="fma-sub-air_gfx/knob_rojo.png">https://github.com/FMA-Series/fma-reapack/raw/ffc5446f2c203f5055cdfa81c102f522df3c6dd8/FMA%20Series/fma-sub-air_gfx/knob_rojo.png</source>
-        <source file="fma-sub-air_gfx/knob_monobelow.png">https://github.com/FMA-Series/fma-reapack/raw/ffc5446f2c203f5055cdfa81c102f522df3c6dd8/FMA%20Series/fma-sub-air_gfx/knob_monobelow.png</source>
-        <source file="fma-sub-air_gfx/toggle_2pos.png">https://github.com/FMA-Series/fma-reapack/raw/ffc5446f2c203f5055cdfa81c102f522df3c6dd8/FMA%20Series/fma-sub-air_gfx/toggle_2pos.png</source>
-        <source file="fma-sub-air_gfx/mode_3pos.png">https://github.com/FMA-Series/fma-reapack/raw/ffc5446f2c203f5055cdfa81c102f522df3c6dd8/FMA%20Series/fma-sub-air_gfx/mode_3pos.png</source>
-        <source file="fma-sub-air_gfx/power_2pos.png">https://github.com/FMA-Series/fma-reapack/raw/ffc5446f2c203f5055cdfa81c102f522df3c6dd8/FMA%20Series/fma-sub-air_gfx/power_2pos.png</source>
-        <source file="fma-sub-air_gfx/led_verde_fs.png">https://github.com/FMA-Series/fma-reapack/raw/ffc5446f2c203f5055cdfa81c102f522df3c6dd8/FMA%20Series/fma-sub-air_gfx/led_verde_fs.png</source>
-        <source file="fma-sub-air_gfx/led_amarillo_fs.png">https://github.com/FMA-Series/fma-reapack/raw/ffc5446f2c203f5055cdfa81c102f522df3c6dd8/FMA%20Series/fma-sub-air_gfx/led_amarillo_fs.png</source>
-        <source file="fma-sub-air_gfx/vu_face.png">https://github.com/FMA-Series/fma-reapack/raw/ffc5446f2c203f5055cdfa81c102f522df3c6dd8/FMA%20Series/fma-sub-air_gfx/vu_face.png</source>
-        <source file="fma-sub-air_gfx/vu_off.png">https://github.com/FMA-Series/fma-reapack/raw/ffc5446f2c203f5055cdfa81c102f522df3c6dd8/FMA%20Series/fma-sub-air_gfx/vu_off.png</source>
-      </version>
-      <version name="1.5.2" author="Free Mix Audio" time="2026-10-09T04:25:15Z">
-        <changelog><![CDATA[v1.5.2 (2026-10-09)
-  - Orden del bloque @gfx corregido: la declaración de tamaño
-    (@gfx 1024 700) ahora es la primera instrucción de la sección,
-    para que REAPER abra la ventana al tamaño correcto.
-v1.5.1 (2026-10-09)
-  - VU Meter Mode ahora inicia en IN por defecto (antes GR).
-v1.5 (2026-10-09)
-  - Display name simplificado a "FMA Sub-Air" (sin número de versión)
-    para evitar conflictos en futuras actualizaciones. La versión
-    se sigue controlando vía @version para ReaPack.
-v1.4 (2026-10-04)
-  - NEW: Vintage Drive saturator — warm tube-style even-harmonic
-    saturation ("silk" voicing: asymmetric triode-like curve, ultra-soft
-    knee, subtlety-first). Red DRIVE knob (0% = transparent) plus
-    FOCUS selector (Sub / Full / Air) so the user chooses which band
-    gets saturated. 2x oversampled saturation path for alias-free
-    harmonics. Drive power switch (ON = processing).
-v1.3 (2026-10-01)
-  - GUI controls now update the DSP in real time (no need to press play)
-  - Per-section bypass switches respond instantly
-v1.2
-  - Initial FMA Series release]]></changelog>
-        <source>https://github.com/FMA-Series/fma-reapack/raw/71aaef0d6c11122f871aa3649b9ab54d5ec12aed/FMA%20Series/fma-sub-air.jsfx</source>
-        <source file="fma-sub-air_gfx/panel.png">https://github.com/FMA-Series/fma-reapack/raw/71aaef0d6c11122f871aa3649b9ab54d5ec12aed/FMA%20Series/fma-sub-air_gfx/panel.png</source>
-        <source file="fma-sub-air_gfx/knob_marron.png">https://github.com/FMA-Series/fma-reapack/raw/71aaef0d6c11122f871aa3649b9ab54d5ec12aed/FMA%20Series/fma-sub-air_gfx/knob_marron.png</source>
-        <source file="fma-sub-air_gfx/knob_hueso.png">https://github.com/FMA-Series/fma-reapack/raw/71aaef0d6c11122f871aa3649b9ab54d5ec12aed/FMA%20Series/fma-sub-air_gfx/knob_hueso.png</source>
-        <source file="fma-sub-air_gfx/knob_naranja.png">https://github.com/FMA-Series/fma-reapack/raw/71aaef0d6c11122f871aa3649b9ab54d5ec12aed/FMA%20Series/fma-sub-air_gfx/knob_naranja.png</source>
-        <source file="fma-sub-air_gfx/knob_rojo.png">https://github.com/FMA-Series/fma-reapack/raw/71aaef0d6c11122f871aa3649b9ab54d5ec12aed/FMA%20Series/fma-sub-air_gfx/knob_rojo.png</source>
-        <source file="fma-sub-air_gfx/knob_monobelow.png">https://github.com/FMA-Series/fma-reapack/raw/71aaef0d6c11122f871aa3649b9ab54d5ec12aed/FMA%20Series/fma-sub-air_gfx/knob_monobelow.png</source>
-        <source file="fma-sub-air_gfx/toggle_2pos.png">https://github.com/FMA-Series/fma-reapack/raw/71aaef0d6c11122f871aa3649b9ab54d5ec12aed/FMA%20Series/fma-sub-air_gfx/toggle_2pos.png</source>
-        <source file="fma-sub-air_gfx/mode_3pos.png">https://github.com/FMA-Series/fma-reapack/raw/71aaef0d6c11122f871aa3649b9ab54d5ec12aed/FMA%20Series/fma-sub-air_gfx/mode_3pos.png</source>
-        <source file="fma-sub-air_gfx/power_2pos.png">https://github.com/FMA-Series/fma-reapack/raw/71aaef0d6c11122f871aa3649b9ab54d5ec12aed/FMA%20Series/fma-sub-air_gfx/power_2pos.png</source>
-        <source file="fma-sub-air_gfx/led_verde_fs.png">https://github.com/FMA-Series/fma-reapack/raw/71aaef0d6c11122f871aa3649b9ab54d5ec12aed/FMA%20Series/fma-sub-air_gfx/led_verde_fs.png</source>
-        <source file="fma-sub-air_gfx/led_amarillo_fs.png">https://github.com/FMA-Series/fma-reapack/raw/71aaef0d6c11122f871aa3649b9ab54d5ec12aed/FMA%20Series/fma-sub-air_gfx/led_amarillo_fs.png</source>
-        <source file="fma-sub-air_gfx/vu_face.png">https://github.com/FMA-Series/fma-reapack/raw/71aaef0d6c11122f871aa3649b9ab54d5ec12aed/FMA%20Series/fma-sub-air_gfx/vu_face.png</source>
-        <source file="fma-sub-air_gfx/vu_off.png">https://github.com/FMA-Series/fma-reapack/raw/71aaef0d6c11122f871aa3649b9ab54d5ec12aed/FMA%20Series/fma-sub-air_gfx/vu_off.png</source>
-      </version>
-      <version name="1.5.3" author="Free Mix Audio" time="2026-10-09T05:15:12Z">
-        <changelog><![CDATA[v1.5.2 (2026-10-09)
-  - Orden del bloque @gfx corregido: la declaración de tamaño
-    (@gfx 1024 700) ahora es la primera instrucción de la sección,
-    para que REAPER abra la ventana al tamaño correcto.
-v1.5.1 (2026-10-09)
-  - VU Meter Mode ahora inicia en IN por defecto (antes GR).
-v1.5 (2026-10-09)
-  - Display name simplificado a "FMA Sub-Air" (sin número de versión)
-    para evitar conflictos en futuras actualizaciones. La versión
-    se sigue controlando vía @version para ReaPack.
-v1.4 (2026-10-04)
-  - NEW: Vintage Drive saturator — warm tube-style even-harmonic
-    saturation ("silk" voicing: asymmetric triode-like curve, ultra-soft
-    knee, subtlety-first). Red DRIVE knob (0% = transparent) plus
-    FOCUS selector (Sub / Full / Air) so the user chooses which band
-    gets saturated. 2x oversampled saturation path for alias-free
-    harmonics. Drive power switch (ON = processing).
-v1.3 (2026-10-01)
-  - GUI controls now update the DSP in real time (no need to press play)
-  - Per-section bypass switches respond instantly
-v1.2
-  - Initial FMA Series release]]></changelog>
-        <source>https://github.com/FMA-Series/fma-reapack/raw/1b399db42a873ce1f5978ec9d2a364658a99696d/FMA%20Series/fma-sub-air.jsfx</source>
-        <source file="fma-sub-air_gfx/panel.png">https://github.com/FMA-Series/fma-reapack/raw/1b399db42a873ce1f5978ec9d2a364658a99696d/FMA%20Series/fma-sub-air_gfx/panel.png</source>
-        <source file="fma-sub-air_gfx/knob_marron.png">https://github.com/FMA-Series/fma-reapack/raw/1b399db42a873ce1f5978ec9d2a364658a99696d/FMA%20Series/fma-sub-air_gfx/knob_marron.png</source>
-        <source file="fma-sub-air_gfx/knob_hueso.png">https://github.com/FMA-Series/fma-reapack/raw/1b399db42a873ce1f5978ec9d2a364658a99696d/FMA%20Series/fma-sub-air_gfx/knob_hueso.png</source>
-        <source file="fma-sub-air_gfx/knob_naranja.png">https://github.com/FMA-Series/fma-reapack/raw/1b399db42a873ce1f5978ec9d2a364658a99696d/FMA%20Series/fma-sub-air_gfx/knob_naranja.png</source>
-        <source file="fma-sub-air_gfx/knob_rojo.png">https://github.com/FMA-Series/fma-reapack/raw/1b399db42a873ce1f5978ec9d2a364658a99696d/FMA%20Series/fma-sub-air_gfx/knob_rojo.png</source>
-        <source file="fma-sub-air_gfx/knob_monobelow.png">https://github.com/FMA-Series/fma-reapack/raw/1b399db42a873ce1f5978ec9d2a364658a99696d/FMA%20Series/fma-sub-air_gfx/knob_monobelow.png</source>
-        <source file="fma-sub-air_gfx/toggle_2pos.png">https://github.com/FMA-Series/fma-reapack/raw/1b399db42a873ce1f5978ec9d2a364658a99696d/FMA%20Series/fma-sub-air_gfx/toggle_2pos.png</source>
-        <source file="fma-sub-air_gfx/mode_3pos.png">https://github.com/FMA-Series/fma-reapack/raw/1b399db42a873ce1f5978ec9d2a364658a99696d/FMA%20Series/fma-sub-air_gfx/mode_3pos.png</source>
-        <source file="fma-sub-air_gfx/power_2pos.png">https://github.com/FMA-Series/fma-reapack/raw/1b399db42a873ce1f5978ec9d2a364658a99696d/FMA%20Series/fma-sub-air_gfx/power_2pos.png</source>
-        <source file="fma-sub-air_gfx/led_verde_fs.png">https://github.com/FMA-Series/fma-reapack/raw/1b399db42a873ce1f5978ec9d2a364658a99696d/FMA%20Series/fma-sub-air_gfx/led_verde_fs.png</source>
-        <source file="fma-sub-air_gfx/led_amarillo_fs.png">https://github.com/FMA-Series/fma-reapack/raw/1b399db42a873ce1f5978ec9d2a364658a99696d/FMA%20Series/fma-sub-air_gfx/led_amarillo_fs.png</source>
-        <source file="fma-sub-air_gfx/vu_face.png">https://github.com/FMA-Series/fma-reapack/raw/1b399db42a873ce1f5978ec9d2a364658a99696d/FMA%20Series/fma-sub-air_gfx/vu_face.png</source>
-        <source file="fma-sub-air_gfx/vu_off.png">https://github.com/FMA-Series/fma-reapack/raw/1b399db42a873ce1f5978ec9d2a364658a99696d/FMA%20Series/fma-sub-air_gfx/vu_off.png</source>
-      </version>
-      <version name="1.5.4" author="Free Mix Audio" time="2026-10-09T06:18:07Z">
-        <changelog><![CDATA[v1.5.4 (2026-10-09)
-  - Reduced hit area on the 4 levers (SUB BYPASS,
-    SAFETY LIMITER, AIR BYPASS, DRIVE POWER) and on the
-    MODE selector: now ±48px horizontal and 565-614 vertical,
-    fitted to the graphic edge. POWER unchanged.
-v1.5.3 (2026-10-09)
-  - Code cleanup: removed obsolete comments
-    (references to previous design sizes and "preview build").
-v1.5.2 (2026-10-09)
-  - Fixed @gfx block order: the size declaration
-    (@gfx 1024 700) is now the first instruction in the section,
-    so REAPER opens the window at the correct size.
-v1.5.1 (2026-10-09)
-  - VU Meter Mode now defaults to IN (was GR).
-v1.5 (2026-10-09)
-  - Display name simplificado a "FMA Sub-Air" (sin número de versión)
-    para evitar conflictos en futuras actualizaciones. La versión
-    se sigue controlando vía @version para ReaPack.
-v1.4 (2026-10-04)
-  - NEW: Vintage Drive saturator — warm tube-style even-harmonic
-    saturation ("silk" voicing: asymmetric triode-like curve, ultra-soft
-    knee, subtlety-first). Red DRIVE knob (0% = transparent) plus
-    FOCUS selector (Sub / Full / Air) so the user chooses which band
-    gets saturated. 2x oversampled saturation path for alias-free
-    harmonics. Drive power switch (ON = processing).
-v1.3 (2026-10-01)
-  - GUI controls now update the DSP in real time (no need to press play)
-  - Per-section bypass switches respond instantly
-v1.2
-  - Initial FMA Series release]]></changelog>
-        <source>https://github.com/FMA-Series/fma-reapack/raw/992ae3fa37ef560dc53db1a37dcaa0a2870912ca/FMA%20Series/fma-sub-air.jsfx</source>
-        <source file="fma-sub-air_gfx/panel.png">https://github.com/FMA-Series/fma-reapack/raw/992ae3fa37ef560dc53db1a37dcaa0a2870912ca/FMA%20Series/fma-sub-air_gfx/panel.png</source>
-        <source file="fma-sub-air_gfx/knob_marron.png">https://github.com/FMA-Series/fma-reapack/raw/992ae3fa37ef560dc53db1a37dcaa0a2870912ca/FMA%20Series/fma-sub-air_gfx/knob_marron.png</source>
-        <source file="fma-sub-air_gfx/knob_hueso.png">https://github.com/FMA-Series/fma-reapack/raw/992ae3fa37ef560dc53db1a37dcaa0a2870912ca/FMA%20Series/fma-sub-air_gfx/knob_hueso.png</source>
-        <source file="fma-sub-air_gfx/knob_naranja.png">https://github.com/FMA-Series/fma-reapack/raw/992ae3fa37ef560dc53db1a37dcaa0a2870912ca/FMA%20Series/fma-sub-air_gfx/knob_naranja.png</source>
-        <source file="fma-sub-air_gfx/knob_rojo.png">https://github.com/FMA-Series/fma-reapack/raw/992ae3fa37ef560dc53db1a37dcaa0a2870912ca/FMA%20Series/fma-sub-air_gfx/knob_rojo.png</source>
-        <source file="fma-sub-air_gfx/knob_monobelow.png">https://github.com/FMA-Series/fma-reapack/raw/992ae3fa37ef560dc53db1a37dcaa0a2870912ca/FMA%20Series/fma-sub-air_gfx/knob_monobelow.png</source>
-        <source file="fma-sub-air_gfx/toggle_2pos.png">https://github.com/FMA-Series/fma-reapack/raw/992ae3fa37ef560dc53db1a37dcaa0a2870912ca/FMA%20Series/fma-sub-air_gfx/toggle_2pos.png</source>
-        <source file="fma-sub-air_gfx/mode_3pos.png">https://github.com/FMA-Series/fma-reapack/raw/992ae3fa37ef560dc53db1a37dcaa0a2870912ca/FMA%20Series/fma-sub-air_gfx/mode_3pos.png</source>
-        <source file="fma-sub-air_gfx/power_2pos.png">https://github.com/FMA-Series/fma-reapack/raw/992ae3fa37ef560dc53db1a37dcaa0a2870912ca/FMA%20Series/fma-sub-air_gfx/power_2pos.png</source>
-        <source file="fma-sub-air_gfx/led_verde_fs.png">https://github.com/FMA-Series/fma-reapack/raw/992ae3fa37ef560dc53db1a37dcaa0a2870912ca/FMA%20Series/fma-sub-air_gfx/led_verde_fs.png</source>
-        <source file="fma-sub-air_gfx/led_amarillo_fs.png">https://github.com/FMA-Series/fma-reapack/raw/992ae3fa37ef560dc53db1a37dcaa0a2870912ca/FMA%20Series/fma-sub-air_gfx/led_amarillo_fs.png</source>
-        <source file="fma-sub-air_gfx/vu_face.png">https://github.com/FMA-Series/fma-reapack/raw/992ae3fa37ef560dc53db1a37dcaa0a2870912ca/FMA%20Series/fma-sub-air_gfx/vu_face.png</source>
-        <source file="fma-sub-air_gfx/vu_off.png">https://github.com/FMA-Series/fma-reapack/raw/992ae3fa37ef560dc53db1a37dcaa0a2870912ca/FMA%20Series/fma-sub-air_gfx/vu_off.png</source>
-      </version>
-      <version name="1.5.6" author="Free Mix Audio" time="2026-10-09T20:26:31Z">
-        <changelog><![CDATA[v1.5.6 (2026-10-09)
-  - VU face graphics corrected: scale graduation now matches
-    the needle programming exactly.
-v1.5.5 (2026-10-09)
-  - VU meter ballistics: dedicated level follower with 5ms attack
-    and 150ms release (Tukan-style), plus asymmetric needle smoothing
-    (fast attack 0.75, smooth release 0.35) for analog feel.
-v1.5.4 (2026-10-09)
-  - Reduced hit area on the 4 levers (SUB BYPASS,
-    SAFETY LIMITER, AIR BYPASS, DRIVE POWER) and on the
-    MODE selector: now ±48px horizontal and 565-614 vertical,
-    fitted to the graphic edge. POWER unchanged.
-v1.5.3 (2026-10-09)
-  - Code cleanup: removed obsolete comments
-    (references to previous design sizes and "preview build").
-v1.5.2 (2026-10-09)
-  - Fixed @gfx block order: the size declaration
-    (@gfx 1024 700) is now the first instruction in the section,
-    so REAPER opens the window at the correct size.
-v1.5.1 (2026-10-09)
-  - VU Meter Mode now defaults to IN (was GR).
-v1.5 (2026-10-09)
-  - Display name simplificado a "FMA Sub-Air" (sin número de versión)
-    para evitar conflictos en futuras actualizaciones. La versión
-    se sigue controlando vía @version para ReaPack.
-v1.4 (2026-10-04)
-  - NEW: Vintage Drive saturator — warm tube-style even-harmonic
-    saturation ("silk" voicing: asymmetric triode-like curve, ultra-soft
-    knee, subtlety-first). Red DRIVE knob (0% = transparent) plus
-    FOCUS selector (Sub / Full / Air) so the user chooses which band
-    gets saturated. 2x oversampled saturation path for alias-free
-    harmonics. Drive power switch (ON = processing).
-v1.3 (2026-10-01)
-  - GUI controls now update the DSP in real time (no need to press play)
-  - Per-section bypass switches respond instantly
-v1.2
-  - Initial FMA Series release]]></changelog>
-        <source>https://github.com/FMA-Series/fma-reapack/raw/a7ef3247cba33cd72535d7ce6dd336dc8f7998e2/FMA%20Series/fma-sub-air.jsfx</source>
-        <source file="fma-sub-air_gfx/panel.png">https://github.com/FMA-Series/fma-reapack/raw/a7ef3247cba33cd72535d7ce6dd336dc8f7998e2/FMA%20Series/fma-sub-air_gfx/panel.png</source>
-        <source file="fma-sub-air_gfx/knob_marron.png">https://github.com/FMA-Series/fma-reapack/raw/a7ef3247cba33cd72535d7ce6dd336dc8f7998e2/FMA%20Series/fma-sub-air_gfx/knob_marron.png</source>
-        <source file="fma-sub-air_gfx/knob_hueso.png">https://github.com/FMA-Series/fma-reapack/raw/a7ef3247cba33cd72535d7ce6dd336dc8f7998e2/FMA%20Series/fma-sub-air_gfx/knob_hueso.png</source>
-        <source file="fma-sub-air_gfx/knob_naranja.png">https://github.com/FMA-Series/fma-reapack/raw/a7ef3247cba33cd72535d7ce6dd336dc8f7998e2/FMA%20Series/fma-sub-air_gfx/knob_naranja.png</source>
-        <source file="fma-sub-air_gfx/knob_rojo.png">https://github.com/FMA-Series/fma-reapack/raw/a7ef3247cba33cd72535d7ce6dd336dc8f7998e2/FMA%20Series/fma-sub-air_gfx/knob_rojo.png</source>
-        <source file="fma-sub-air_gfx/knob_monobelow.png">https://github.com/FMA-Series/fma-reapack/raw/a7ef3247cba33cd72535d7ce6dd336dc8f7998e2/FMA%20Series/fma-sub-air_gfx/knob_monobelow.png</source>
-        <source file="fma-sub-air_gfx/toggle_2pos.png">https://github.com/FMA-Series/fma-reapack/raw/a7ef3247cba33cd72535d7ce6dd336dc8f7998e2/FMA%20Series/fma-sub-air_gfx/toggle_2pos.png</source>
-        <source file="fma-sub-air_gfx/mode_3pos.png">https://github.com/FMA-Series/fma-reapack/raw/a7ef3247cba33cd72535d7ce6dd336dc8f7998e2/FMA%20Series/fma-sub-air_gfx/mode_3pos.png</source>
-        <source file="fma-sub-air_gfx/power_2pos.png">https://github.com/FMA-Series/fma-reapack/raw/a7ef3247cba33cd72535d7ce6dd336dc8f7998e2/FMA%20Series/fma-sub-air_gfx/power_2pos.png</source>
-        <source file="fma-sub-air_gfx/led_verde_fs.png">https://github.com/FMA-Series/fma-reapack/raw/a7ef3247cba33cd72535d7ce6dd336dc8f7998e2/FMA%20Series/fma-sub-air_gfx/led_verde_fs.png</source>
-        <source file="fma-sub-air_gfx/led_amarillo_fs.png">https://github.com/FMA-Series/fma-reapack/raw/a7ef3247cba33cd72535d7ce6dd336dc8f7998e2/FMA%20Series/fma-sub-air_gfx/led_amarillo_fs.png</source>
-        <source file="fma-sub-air_gfx/vu_face.png">https://github.com/FMA-Series/fma-reapack/raw/a7ef3247cba33cd72535d7ce6dd336dc8f7998e2/FMA%20Series/fma-sub-air_gfx/vu_face.png</source>
-        <source file="fma-sub-air_gfx/vu_off.png">https://github.com/FMA-Series/fma-reapack/raw/a7ef3247cba33cd72535d7ce6dd336dc8f7998e2/FMA%20Series/fma-sub-air_gfx/vu_off.png</source>
-      </version>
-      <version name="1.5.8" author="Free Mix Audio" time="2026-10-10T09:53:29Z">
-        <changelog><![CDATA[v1.5.8 (2026-10-10)
-  - New OPERATION switch (BUS/INST) with horizontal 2-pos lever,
-    placed symmetrically opposite the DE-HARSH LED:
-    BUS mode (left): 160 Hz sub crossover, -18 dBFS de-harsh
-      threshold, standard drive voicing — for mix bus and mastering.
-    INST mode (right): 90 Hz sub crossover, -26 dBFS de-harsh
-      threshold (creative tool, LED responds on normal material),
-      warmer drive voicing (stronger even-harmonic emphasis) —
-      for individual instruments and tracks.
-v1.5.7 (2026-10-10)
-  - Fixed sub crossover: the highpass section used 3 biquads
-    (6th-order) instead of 2 (4th-order), breaking the Linkwitz-Riley
-    reconstruction and causing a ~5 dB dip at ~154 Hz whenever the
-    sub section was engaged. Now true LR4 4th-order on both bands.
-v1.5.6 (2026-10-09)
-  - VU face graphics corrected: scale graduation now matches
-    the needle programming exactly.
-v1.5.5 (2026-10-09)
-  - VU meter ballistics: dedicated level follower with 5ms attack
-    and 150ms release (Tukan-style), plus asymmetric needle smoothing
-    (fast attack 0.75, smooth release 0.35) for analog feel.
-v1.5.4 (2026-10-09)
-  - Reduced hit area on the 4 levers (SUB BYPASS,
-    SAFETY LIMITER, AIR BYPASS, DRIVE POWER) and on the
-    MODE selector: now ±48px horizontal and 565-614 vertical,
-    fitted to the graphic edge. POWER unchanged.
-v1.5.3 (2026-10-09)
-  - Code cleanup: removed obsolete comments
-    (references to previous design sizes and "preview build").
-v1.5.2 (2026-10-09)
-  - Fixed @gfx block order: the size declaration
-    (@gfx 1024 700) is now the first instruction in the section,
-    so REAPER opens the window at the correct size.
-v1.5.1 (2026-10-09)
-  - VU Meter Mode now defaults to IN (was GR).
-v1.5 (2026-10-09)
-  - Display name simplificado a "FMA Sub-Air" (sin número de versión)
-    para evitar conflictos en futuras actualizaciones. La versión
-    se sigue controlando vía @version para ReaPack.
-v1.4 (2026-10-04)
-  - NEW: Vintage Drive saturator — warm tube-style even-harmonic
-    saturation ("silk" voicing: asymmetric triode-like curve, ultra-soft
-    knee, subtlety-first). Red DRIVE knob (0% = transparent) plus
-    FOCUS selector (Sub / Full / Air) so the user chooses which band
-    gets saturated. 2x oversampled saturation path for alias-free
-    harmonics. Drive power switch (ON = processing).
-v1.3 (2026-10-01)
-  - GUI controls now update the DSP in real time (no need to press play)
-  - Per-section bypass switches respond instantly
-v1.2
-  - Initial FMA Series release]]></changelog>
-        <source>https://github.com/FMA-Series/fma-reapack/raw/c070a705b3ca0bee4aa2d8c94b02304181c6324e/FMA%20Series/fma-sub-air.jsfx</source>
-        <source file="fma-sub-air_gfx/panel.png">https://github.com/FMA-Series/fma-reapack/raw/c070a705b3ca0bee4aa2d8c94b02304181c6324e/FMA%20Series/fma-sub-air_gfx/panel.png</source>
-        <source file="fma-sub-air_gfx/knob_marron.png">https://github.com/FMA-Series/fma-reapack/raw/c070a705b3ca0bee4aa2d8c94b02304181c6324e/FMA%20Series/fma-sub-air_gfx/knob_marron.png</source>
-        <source file="fma-sub-air_gfx/knob_hueso.png">https://github.com/FMA-Series/fma-reapack/raw/c070a705b3ca0bee4aa2d8c94b02304181c6324e/FMA%20Series/fma-sub-air_gfx/knob_hueso.png</source>
-        <source file="fma-sub-air_gfx/knob_naranja.png">https://github.com/FMA-Series/fma-reapack/raw/c070a705b3ca0bee4aa2d8c94b02304181c6324e/FMA%20Series/fma-sub-air_gfx/knob_naranja.png</source>
-        <source file="fma-sub-air_gfx/knob_rojo.png">https://github.com/FMA-Series/fma-reapack/raw/c070a705b3ca0bee4aa2d8c94b02304181c6324e/FMA%20Series/fma-sub-air_gfx/knob_rojo.png</source>
-        <source file="fma-sub-air_gfx/knob_monobelow.png">https://github.com/FMA-Series/fma-reapack/raw/c070a705b3ca0bee4aa2d8c94b02304181c6324e/FMA%20Series/fma-sub-air_gfx/knob_monobelow.png</source>
-        <source file="fma-sub-air_gfx/toggle_2pos.png">https://github.com/FMA-Series/fma-reapack/raw/c070a705b3ca0bee4aa2d8c94b02304181c6324e/FMA%20Series/fma-sub-air_gfx/toggle_2pos.png</source>
-        <source file="fma-sub-air_gfx/mode_3pos.png">https://github.com/FMA-Series/fma-reapack/raw/c070a705b3ca0bee4aa2d8c94b02304181c6324e/FMA%20Series/fma-sub-air_gfx/mode_3pos.png</source>
-        <source file="fma-sub-air_gfx/power_2pos.png">https://github.com/FMA-Series/fma-reapack/raw/c070a705b3ca0bee4aa2d8c94b02304181c6324e/FMA%20Series/fma-sub-air_gfx/power_2pos.png</source>
-        <source file="fma-sub-air_gfx/led_verde_fs.png">https://github.com/FMA-Series/fma-reapack/raw/c070a705b3ca0bee4aa2d8c94b02304181c6324e/FMA%20Series/fma-sub-air_gfx/led_verde_fs.png</source>
-        <source file="fma-sub-air_gfx/led_amarillo_fs.png">https://github.com/FMA-Series/fma-reapack/raw/c070a705b3ca0bee4aa2d8c94b02304181c6324e/FMA%20Series/fma-sub-air_gfx/led_amarillo_fs.png</source>
-        <source file="fma-sub-air_gfx/vu_face.png">https://github.com/FMA-Series/fma-reapack/raw/c070a705b3ca0bee4aa2d8c94b02304181c6324e/FMA%20Series/fma-sub-air_gfx/vu_face.png</source>
-        <source file="fma-sub-air_gfx/vu_off.png">https://github.com/FMA-Series/fma-reapack/raw/c070a705b3ca0bee4aa2d8c94b02304181c6324e/FMA%20Series/fma-sub-air_gfx/vu_off.png</source>
-      </version>
-      <version name="1.5.9" author="Free Mix Audio" time="2026-10-17T19:56:38Z">
-        <changelog><![CDATA[v1.5.9 (2026-10-17)
+      <version name="1.6.0" author="Free Mix Audio" time="2026-10-21T04:44:08Z">
+        <changelog><![CDATA[v1.6.0 (2026-10-20)
+  - Clean reworked: zone-shaped knob authority (internal
+    SOFT 0-50% / MID 50-83% / HARD 83-100% zones), gated by
+    AIR (Clean only polices the boost once AIR passes ~half,
+    soft knee in), with mode ceilings: INST may eat the whole
+    boost on harsh peaks; BUS caps the reduction at 3 dB so a
+    mix bus or master can never be torn apart. Clean still
+    only reduces the AIR boost, never the source itself.
+  - De-harsh detector thresholds lowered for sensitivity:
+    BUS -24 dBFS, INST -32 dBFS (were -18 / -26).
+  - DE-HARSH LED: new eager law. It lights early and climbs
+    fast with detector activity and knob position - a livelier
+    visual than the gentle real reduction behind it.
+  - New vu_off.png (companion graphics): the needle now rests
+    parked at the left stop when powered off instead of
+    disappearing.
+  - Mouse wheel: every knob and lever (incl. MODE, OPERATION
+    and POWER) answers to the scroll wheel, one step per notch;
+    levers are directional - scroll up/down drives them to their
+    ends and holds them there. Only the IN/GR/OUT meter selector
+    stays click-only.
+v1.5.9 (2026-10-17)
   - Fixed VU level followers (IN and OUT): the old one-pole
     follower chased the instantaneous rectified signal instead
     of holding the peak, so on a steady sine it settled
@@ -412,20 +97,20 @@ v1.3 (2026-10-01)
   - Per-section bypass switches respond instantly
 v1.2
   - Initial FMA Series release]]></changelog>
-        <source>https://github.com/FMA-Series/fma-reapack/raw/1523d89b71f071eac3c96a764a78e52acb66e13b/FMA%20Series/fma-sub-air.jsfx</source>
-        <source file="fma-sub-air_gfx/panel.png">https://github.com/FMA-Series/fma-reapack/raw/1523d89b71f071eac3c96a764a78e52acb66e13b/FMA%20Series/fma-sub-air_gfx/panel.png</source>
-        <source file="fma-sub-air_gfx/knob_marron.png">https://github.com/FMA-Series/fma-reapack/raw/1523d89b71f071eac3c96a764a78e52acb66e13b/FMA%20Series/fma-sub-air_gfx/knob_marron.png</source>
-        <source file="fma-sub-air_gfx/knob_hueso.png">https://github.com/FMA-Series/fma-reapack/raw/1523d89b71f071eac3c96a764a78e52acb66e13b/FMA%20Series/fma-sub-air_gfx/knob_hueso.png</source>
-        <source file="fma-sub-air_gfx/knob_naranja.png">https://github.com/FMA-Series/fma-reapack/raw/1523d89b71f071eac3c96a764a78e52acb66e13b/FMA%20Series/fma-sub-air_gfx/knob_naranja.png</source>
-        <source file="fma-sub-air_gfx/knob_rojo.png">https://github.com/FMA-Series/fma-reapack/raw/1523d89b71f071eac3c96a764a78e52acb66e13b/FMA%20Series/fma-sub-air_gfx/knob_rojo.png</source>
-        <source file="fma-sub-air_gfx/knob_monobelow.png">https://github.com/FMA-Series/fma-reapack/raw/1523d89b71f071eac3c96a764a78e52acb66e13b/FMA%20Series/fma-sub-air_gfx/knob_monobelow.png</source>
-        <source file="fma-sub-air_gfx/toggle_2pos.png">https://github.com/FMA-Series/fma-reapack/raw/1523d89b71f071eac3c96a764a78e52acb66e13b/FMA%20Series/fma-sub-air_gfx/toggle_2pos.png</source>
-        <source file="fma-sub-air_gfx/mode_3pos.png">https://github.com/FMA-Series/fma-reapack/raw/1523d89b71f071eac3c96a764a78e52acb66e13b/FMA%20Series/fma-sub-air_gfx/mode_3pos.png</source>
-        <source file="fma-sub-air_gfx/power_2pos.png">https://github.com/FMA-Series/fma-reapack/raw/1523d89b71f071eac3c96a764a78e52acb66e13b/FMA%20Series/fma-sub-air_gfx/power_2pos.png</source>
-        <source file="fma-sub-air_gfx/led_verde_fs.png">https://github.com/FMA-Series/fma-reapack/raw/1523d89b71f071eac3c96a764a78e52acb66e13b/FMA%20Series/fma-sub-air_gfx/led_verde_fs.png</source>
-        <source file="fma-sub-air_gfx/led_amarillo_fs.png">https://github.com/FMA-Series/fma-reapack/raw/1523d89b71f071eac3c96a764a78e52acb66e13b/FMA%20Series/fma-sub-air_gfx/led_amarillo_fs.png</source>
-        <source file="fma-sub-air_gfx/vu_face.png">https://github.com/FMA-Series/fma-reapack/raw/1523d89b71f071eac3c96a764a78e52acb66e13b/FMA%20Series/fma-sub-air_gfx/vu_face.png</source>
-        <source file="fma-sub-air_gfx/vu_off.png">https://github.com/FMA-Series/fma-reapack/raw/1523d89b71f071eac3c96a764a78e52acb66e13b/FMA%20Series/fma-sub-air_gfx/vu_off.png</source>
+        <source>https://github.com/FMA-Series/fma-reapack/raw/08feb2c105cdca3c5136c426efe4741e6b8e2ffc/FMA%20Series/fma-sub-air.jsfx</source>
+        <source file="fma-sub-air_gfx/panel.png">https://github.com/FMA-Series/fma-reapack/raw/08feb2c105cdca3c5136c426efe4741e6b8e2ffc/FMA%20Series/fma-sub-air_gfx/panel.png</source>
+        <source file="fma-sub-air_gfx/knob_marron.png">https://github.com/FMA-Series/fma-reapack/raw/08feb2c105cdca3c5136c426efe4741e6b8e2ffc/FMA%20Series/fma-sub-air_gfx/knob_marron.png</source>
+        <source file="fma-sub-air_gfx/knob_hueso.png">https://github.com/FMA-Series/fma-reapack/raw/08feb2c105cdca3c5136c426efe4741e6b8e2ffc/FMA%20Series/fma-sub-air_gfx/knob_hueso.png</source>
+        <source file="fma-sub-air_gfx/knob_naranja.png">https://github.com/FMA-Series/fma-reapack/raw/08feb2c105cdca3c5136c426efe4741e6b8e2ffc/FMA%20Series/fma-sub-air_gfx/knob_naranja.png</source>
+        <source file="fma-sub-air_gfx/knob_rojo.png">https://github.com/FMA-Series/fma-reapack/raw/08feb2c105cdca3c5136c426efe4741e6b8e2ffc/FMA%20Series/fma-sub-air_gfx/knob_rojo.png</source>
+        <source file="fma-sub-air_gfx/knob_monobelow.png">https://github.com/FMA-Series/fma-reapack/raw/08feb2c105cdca3c5136c426efe4741e6b8e2ffc/FMA%20Series/fma-sub-air_gfx/knob_monobelow.png</source>
+        <source file="fma-sub-air_gfx/toggle_2pos.png">https://github.com/FMA-Series/fma-reapack/raw/08feb2c105cdca3c5136c426efe4741e6b8e2ffc/FMA%20Series/fma-sub-air_gfx/toggle_2pos.png</source>
+        <source file="fma-sub-air_gfx/mode_3pos.png">https://github.com/FMA-Series/fma-reapack/raw/08feb2c105cdca3c5136c426efe4741e6b8e2ffc/FMA%20Series/fma-sub-air_gfx/mode_3pos.png</source>
+        <source file="fma-sub-air_gfx/power_2pos.png">https://github.com/FMA-Series/fma-reapack/raw/08feb2c105cdca3c5136c426efe4741e6b8e2ffc/FMA%20Series/fma-sub-air_gfx/power_2pos.png</source>
+        <source file="fma-sub-air_gfx/led_verde_fs.png">https://github.com/FMA-Series/fma-reapack/raw/08feb2c105cdca3c5136c426efe4741e6b8e2ffc/FMA%20Series/fma-sub-air_gfx/led_verde_fs.png</source>
+        <source file="fma-sub-air_gfx/led_amarillo_fs.png">https://github.com/FMA-Series/fma-reapack/raw/08feb2c105cdca3c5136c426efe4741e6b8e2ffc/FMA%20Series/fma-sub-air_gfx/led_amarillo_fs.png</source>
+        <source file="fma-sub-air_gfx/vu_face.png">https://github.com/FMA-Series/fma-reapack/raw/08feb2c105cdca3c5136c426efe4741e6b8e2ffc/FMA%20Series/fma-sub-air_gfx/vu_face.png</source>
+        <source file="fma-sub-air_gfx/vu_off.png">https://github.com/FMA-Series/fma-reapack/raw/08feb2c105cdca3c5136c426efe4741e6b8e2ffc/FMA%20Series/fma-sub-air_gfx/vu_off.png</source>
       </version>
     </reapack>
   </category>
