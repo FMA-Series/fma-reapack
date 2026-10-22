@@ -21,6 +21,12 @@ the plugin file.
 > **License:** MIT — see [LICENSE](LICENSE). The original copyright and
 > attribution are preserved in every file.
 
+> ⚠ **[READ-ME-FIRST.md](READ-ME-FIRST.md)** — this package ships **two files
+> of the same plugin**: `reeq-fma-edition.jsfx` (opens in the FMA Solid theme)
+> and `ReEQ.jsfx`, a drop-in replacement for Sai'ke's original that loads in
+> its place in your existing projects and opens with his original Classic
+> look. Read that file before installing.
+
 ---
 
 ## What the FMA Edition adds and fixes
@@ -93,7 +99,11 @@ one click away when you want it.
 2. Open the `Effects` folder inside that path.
 3. Copy the contents of this package's `Effects` folder into it, keeping the
    folder structure:
-   - `Effects/reeq-fma-edition.jsfx`
+   - `Effects/ReEQ.jsfx` — *the drop-in replacement for Sai'ke's original
+     (same file name; opens with the original Classic look). Install it over
+     the original and your projects keep working, settings intact.*
+   - `Effects/reeq-fma-edition.jsfx` — *the same plugin under its own name
+     (opens with the FMA Solid theme). Install either file, or both.*
    - `Effects/reeq-fma-edition-deps/spectrum.jsfx-inc`
    - `Effects/Dependencies/svf_filter.jsfx-inc` *(Sai'ke's original file,
      unmodified)*
