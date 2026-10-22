@@ -10,6 +10,7 @@ on:
       - '**.jsfx'
       - '**.png'
       - '.github/workflows/reapack-index.yml'
+      - '.github/fix-pngs.py'
 
 
 permissions:
