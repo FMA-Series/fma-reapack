@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Fix reapack-index bug: ensure all 13 PNGs are in index.xml for fma-sub-air."""
+"""Fix reapack-index bug: ensure all 14 PNGs are in index.xml for fma-sub-air."""
 import re
 import sys
 
 PNGS = ['panel.png', 'knob_marron.png', 'knob_hueso.png', 'knob_naranja.png',
-        'knob_rojo.png', 'knob_monobelow.png', 'toggle_2pos.png', 'mode_3pos.png',
+        'knob_rojo.png', 'knob_monobelow.png', 'knob_lowcut.png', 'toggle_2pos.png', 'mode_3pos.png',
         'power_2pos.png', 'led_verde_fs.png', 'led_amarillo_fs.png',
         'vu_face.png', 'vu_off.png']
 
@@ -56,8 +56,8 @@ def fix_all_versions(xml):
                     sources.append(f'        <source file="fma-sub-air_gfx/{png}">{url}</source>')
                 pattern = r'(<changelog>.*?</changelog>\n)(.*?)(\n      </version>)'
                 part = re.sub(pattern, 
-                             lambda sm: sm.group(1) + '\n'.join(sources) + sm.group(3),
-                             part, flags=re.DOTALL)
+                              lambda sm: sm.group(1) + '\n'.join(sources) + sm.group(3),
+                              part, flags=re.DOTALL)
         result.append(part)
     return ''.join(result)
 
@@ -65,4 +65,4 @@ xml = fix_all_versions(xml)
 
 with open('index.xml', 'w') as f:
     f.write(xml)
-print("index.xml fixed: all versions now have 13 PNGs")
+print("index.xml fixed: all versions now have 14 PNGs")
