@@ -74,3 +74,5 @@ FMA Series/
 screenshots/                <- capturas para el catálogo ReaPack
 index.xml                   <- generado por reapack-index (no editar a mano)
 ```
+## ReEQ – FMA Edition
+Install via ReaPack from this repository (FMA Series category). Manual-install package (two-file edition with manuals): see the Release 'ReEQ – FMA Edition 1.2.0-fma.20 — manual install package'.
