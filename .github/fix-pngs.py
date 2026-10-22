@@ -56,8 +56,8 @@ def fix_all_versions(xml):
                     sources.append(f'        <source file="fma-sub-air_gfx/{png}">{url}</source>')
                 pattern = r'(<changelog>.*?</changelog>\n)(.*?)(\n      </version>)'
                 part = re.sub(pattern, 
-                              lambda sm: sm.group(1) + '\n'.join(sources) + sm.group(3),
-                              part, flags=re.DOTALL)
+                             lambda sm: sm.group(1) + '\n'.join(sources) + sm.group(3),
+                             part, flags=re.DOTALL)
         result.append(part)
     return ''.join(result)
 
