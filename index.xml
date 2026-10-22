@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" commit="7454a7c02c96d246e2c8bec88a8232dfee093082" name="Free Mix Audio">
+<index version="1" commit="d0e16ee3ab5706795627629c7455e7b8502c2af7" name="Free Mix Audio">
   <category name="FMA Series">
     <reapack name="fma-sub-air.jsfx" type="effect" desc="FMA Sub-Air">
       <metadata>
@@ -231,6 +231,71 @@ v1.2
         <source file="fma-sub-air_gfx/led_amarillo_fs.png">https://github.com/FMA-Series/fma-reapack/raw/7454a7c02c96d246e2c8bec88a8232dfee093082/FMA%20Series/fma-sub-air_gfx/led_amarillo_fs.png</source>
         <source file="fma-sub-air_gfx/vu_face.png">https://github.com/FMA-Series/fma-reapack/raw/7454a7c02c96d246e2c8bec88a8232dfee093082/FMA%20Series/fma-sub-air_gfx/vu_face.png</source>
         <source file="fma-sub-air_gfx/vu_off.png">https://github.com/FMA-Series/fma-reapack/raw/7454a7c02c96d246e2c8bec88a8232dfee093082/FMA%20Series/fma-sub-air_gfx/vu_off.png</source>
+      </version>
+    </reapack>
+    <reapack name="reeq-fma-edition.jsfx" type="effect" desc="ReEQ - Parametric Graphic Equalizer (FMA Edition)">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 ReEQ - Parametric Graphic Equalizer (FMA Edition)\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Corrected and extended edition of ReEQ v1.2.0 by Justin Johnson, released under the MIT license; original copyright and attribution are preserved. Per-band dynamics, x2 minimum-phase HQ mode, SILK (HQ only), a finished -1 dBFS soft-ceiling limiter, the FMA skin and six full GUI themes. FMA Series by Free Mix Audio.\par}
+}
+]]></description>
+      </metadata>
+      <version name="1.2.0" author="Justin Johnson (original ReEQ); FMA Edition by Free Mix Audio" time="2026-10-22T22:30:54Z">
+        <changelog><![CDATA[1.2.0-fma.20 (2026-10-22) Bottom row centred on the window width;
+  theme selector moved into the bottom row, base theme renamed
+  "FMA Solid". Audio bit-identical to fma.19.
+1.2.0-fma.19 (2026-10-22) Final stage: SILK spectral brushstrokes
+  (HQ only, locked in ECO) + finished limiter: soft ceiling at
+  -1 dBFS replacing the factory 0 dBFS hard clip. Audit fix B1.
+1.2.0-fma.18 (2026-10-22) Six full FMA themes (Fire Storm, Ice
+  Storm, Sand Storm, Star Rain, Sea Mist, Bronze Wall) + Classic,
+  selected from the GUI theme pill in the bottom row.
+1.2.0-fma.17 (2026-10-21) FMA skin: intense orange buttons
+  (#F26B1A) + rounded node-panel corners; translucency preserved.
+1.2.0-fma.16 (2026-10-21) FMA skin buttons redrawn with the
+  original capsule shape (no outline end-circles).
+1.2.0-fma.15 (2026-10-21) FMA house skin (graphite + amber) with
+  Classic kept one click away; translucent node panel preserved.
+1.2.0-fma.14 (2026-10-21) Display-only: the graph no longer
+  reports the HQ Nyquist droop of the oversampling chain.
+1.2.0-fma.13 (2026-10-21) HQ rebuilt as x2 minimum-phase
+  oversampling (PDC 31). This EQ carries NO linear phase.
+1.2.0-fma.12 (2026-10-19) Four corrections from review (kernel
+  build pacing, design curve, 10 Hz grid edge, dynamics merge).
+1.2.0-fma.11 (2026-10-19) Reformulation: two modes only
+  {Eco, HQ}; a fresh instance always starts in ECO.
+1.2.0-fma.10 (2026-10-18) Pruning of leftover stage machinery +
+  fast dry-seeded start.
+1.2.0-fma.9 (2026-10-18) Linear Phase via partitioned FFT
+  convolution (engine later retired in fma.13).
+1.2.0-fma.8 (2026-10-17) HQ oversampling stage (later rebuilt).
+1.2.0-fma.7 (2026-10-17) Self-contained HQ half-band filter
+  (formula-generated FIR, works at every sample rate).
+1.2.0-fma.6 (2026-10-17) LP kernel 4095 taps.
+1.2.0-fma.5 (2026-10-17) Dynamics action curve drawn at the node.
+1.2.0-fma.4 (2026-10-16) Dynamics display + node panel fixes.
+1.2.0-fma.3 (2026-10-16) Per-band DYN on/off + real Attack/Release.
+1.2.0-fma.2 (2026-10-16) Per-band dynamics + Linear Phase mode.
+1.2.0-fma.1 (2026-10-15) P0 audit fixes. Full fma.1-fma.20
+  modification log is kept inside the file, below the sliders.]]></changelog>
+        <source>https://github.com/FMA-Series/fma-reapack/raw/d0e16ee3ab5706795627629c7455e7b8502c2af7/FMA%20Series/reeq-fma-edition.jsfx</source>
+        <source file="Dependencies/svf_filter.jsfx-inc">https://github.com/FMA-Series/fma-reapack/raw/d0e16ee3ab5706795627629c7455e7b8502c2af7/FMA%20Series/Dependencies/svf_filter.jsfx-inc</source>
+      </version>
+    </reapack>
+  </category>
+  <category name="reeq-fma-edition/Effects">
+    <reapack name="reeq-fma-edition.jsfx" type="effect" desc="ReEQ - Parametric Graphic Equalizer (FMA Edition)">
+      <version name="1.2.0-fma.20  //&lt;--- Make sure you change VERSION below if this changes!!" author="Justin Johnson" time="2026-10-22T20:30:07Z">
+        <source>https://github.com/FMA-Series/fma-reapack/raw/3cd259cfce13b58c2246c0ccb088350b9c766181/reeq-fma-edition/Effects/reeq-fma-edition.jsfx</source>
+      </version>
+    </reapack>
+    <reapack name="ReEQ.jsfx" type="effect" desc="ReEQ - Parametric Graphic Equalizer (FMA Edition)">
+      <version name="1.2.0-fma.20  //&lt;--- Make sure you change VERSION below if this changes!!" author="Justin Johnson" time="2026-10-22T22:28:39Z">
+        <source>https://github.com/FMA-Series/fma-reapack/raw/2c045f0ea535d0724e9b6898776f93e68040c7ac/reeq-fma-edition/Effects/ReEQ.jsfx</source>
       </version>
     </reapack>
   </category>
