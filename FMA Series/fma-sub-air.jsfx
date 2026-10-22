@@ -1,7 +1,27 @@
 desc:FMA Sub-Air
-// @version 1.6.0
+// @version 1.7.0
 // @author Free Mix Audio
 // @changelog
+//   v1.7.0 (2026-10-22)
+//     - NEW GUI (Juan's design, measured 1:1 from his layered PSD):
+//       the window is now exactly the metal plate, 951x623 - the
+//       dark surround is gone. Every control sits at its PSD
+//       position and size: MONO BELOW is back to its designed
+//       proportion (75% of a main knob), chrome bat-toggle levers
+//       and POWER bat from the PSD layers, IN/GR/OUT and DE-HARSH
+//       at their new places. Knob draw sizes are computed from
+//       the measured disc inside each filmstrip (the classic
+//       strips carry the disc at ~122 px inside 154 px frames),
+//       so every knob lands at its exact PSD diameter.
+//     - NEW: LOW CUT (slider17) - stepped high-pass, OFF then
+//       20..200 Hz in 20 Hz steps (11 detents), green pointer knob
+//       between SUB ENHANCE and TIGHT. End of chain, post-sum,
+//       before the safety limiter, so the limiter stops reacting
+//       to infrasonics and drive-generated DC. Slopes follow the
+//       per-mode standard: BUS 12 dB/oct (2nd-order Butterworth),
+//       INST 18 dB/oct (3rd-order Butterworth). TPT/SVF structure,
+//       ~15 ms coefficient slew + ~10 ms engage crossfade (no
+//       clicks, no zipper); 0 = exact bypass.
 //   v1.6.0 (2026-10-20)
 //     - Clean reworked: zone-shaped knob authority (internal
 //       SOFT 0-50% / MID 50-83% / HARD 83-100% zones), gated by
@@ -95,6 +115,7 @@ desc:FMA Sub-Air
 // @provides fma-sub-air_gfx/knob_naranja.png
 // @provides fma-sub-air_gfx/knob_rojo.png
 // @provides fma-sub-air_gfx/knob_monobelow.png
+// @provides fma-sub-air_gfx/knob_lowcut.png
 // @provides fma-sub-air_gfx/toggle_2pos.png
 // @provides fma-sub-air_gfx/mode_3pos.png
 // @provides fma-sub-air_gfx/power_2pos.png
@@ -173,6 +194,7 @@ slider13:1<0,1,1{Off,On}>Drive Power
 slider14:0<0,2,1{IN,GR,OUT}>VU Meter Mode
 slider15:1<0,1,1{Off,On}>Power
 slider16:0<0,1,1{Bus,Inst}>-Operation
+slider17:0<0,200,20>-Low Cut (Hz)
 
 // pi is NOT a built-in EEL2 constant (reads as 0); stock plugins define
 // it themselves, so we set it here before anything uses it.
@@ -190,6 +212,7 @@ filename:9,fma-sub-air_gfx/power_2pos.png
 filename:10,fma-sub-air_gfx/led_verde_fs.png
 filename:11,fma-sub-air_gfx/led_amarillo_fs.png
 filename:12,fma-sub-air_gfx/vu_off.png
+filename:13,fma-sub-air_gfx/knob_lowcut.png
 @init
   pi = 3.141592653589793;
   in_g = 1; out_g = 1;          // smoothed applied gains
@@ -201,9 +224,10 @@ filename:12,fma-sub-air_gfx/vu_off.png
   drag_id = -1;                 // GUI drag state
   g_f0 = 0; g_f1 = 0; g_f2 = 0; g_fdh = 0; g_dh_peak = 0; g_dh_last = -1;  // LED fades
   bypass_mix = 0;  // 0=wet, 1=dry
+  lc_g = 0; lc_k = 1.4142135623730951; lc_3m = 0; lc_mix = 0;  // Low Cut smoothed state
   ui_sliders = 0;               // generic sliders hidden (gfx UI only)
   startup = 0;                  // startup fade (masks cold-start transients)
-  slider_show(32767, 0);        // hide all 15 generic sliders in the FX window
+  slider_show(131071, 0);        // hide all 15 generic sliders in the FX window
   // (all filter states default to 0)
 
   // ---- Vintage Drive state ----
@@ -329,6 +353,19 @@ function upd_params() (
   bp_coefs(4500, 1);
   p_b0 = bq_b0/bq_a0; p_b1 = bq_b1/bq_a0; p_b2 = bq_b2/bq_a0;
   p_a1 = bq_a1/bq_a0; p_a2 = bq_a2/bq_a0;
+
+  // ---- Low Cut (v1.7.0): stepped HPF at the very end of the chain.
+  // fc comes straight from slider17 (0 = OFF). Slope follows the
+  // per-mode standard: BUS 2nd-order Butterworth (12 dB/oct, SVF
+  // k = sqrt(2)); INST 3rd-order Butterworth (18 dB/oct, SVF k = 1
+  // plus the TPT one-pole section, blended in by lc_3m in @sample).
+  lc_hz = slider17|0;
+  lc_on = lc_hz > 0;
+  lc_g_t = lc_on ? tan(pi*lc_hz/srate) : 0;
+  lc_k_t = inst_mode ? 1 : 1.4142135623730951;
+  lc_3rd = inst_mode;
+  sm_lc = smc(0.015);    // coefficient slew: click-free step changes
+  sm_lcm = smc(0.010);   // engage/disengage crossfade
 );
 
 function drv_sat(x) (
@@ -409,6 +446,11 @@ function flush_all() (  // denormal guard, called every 1024 samples (cheap)
   abs(dbb2_0) < 0.000000000001 ? (dbb2_0 = 0);  abs(dbb3_0) < 0.000000000001 ? (dbb3_0 = 0);
   abs(dbb0_1) < 0.000000000001 ? (dbb0_1 = 0);  abs(dbb1_1) < 0.000000000001 ? (dbb1_1 = 0);
   abs(dbb2_1) < 0.000000000001 ? (dbb2_1 = 0);  abs(dbb3_1) < 0.000000000001 ? (dbb3_1 = 0);
+  // Low Cut states
+  abs(lc_ic1_0) < 0.000000000001 ? (lc_ic1_0 = 0);  abs(lc_ic2_0) < 0.000000000001 ? (lc_ic2_0 = 0);
+  abs(lc_lp_0) < 0.000000000001 ? (lc_lp_0 = 0);
+  abs(lc_ic1_1) < 0.000000000001 ? (lc_ic1_1 = 0);  abs(lc_ic2_1) < 0.000000000001 ? (lc_ic2_1 = 0);
+  abs(lc_lp_1) < 0.000000000001 ? (lc_lp_1 = 0);
 );
 
 //---------------------------------------------------------------- gfx helpers
@@ -505,49 +547,60 @@ function draw_pushbtn(cx, cy, w, h, active) (  // caption via #dtxt
 // Knob ids: 0=INPUT 1=OUTPUT 2=CLEAN 3=SUB ENHANCE 4=TIGHT 5=AIR 6=DRIVE 7=MONO BELOW
 function kval(id) (
   id==0 ? slider1 : id==1 ? slider10 : id==2 ? slider9 : id==3 ? slider3 :
-  id==4 ? slider4 : id==5 ? slider8 : id==6 ? slider11 : slider5;
+  id==4 ? slider4 : id==5 ? slider8 : id==6 ? slider11 : id==7 ? slider5 : slider17/20;
 );
 function kmin(id) ( (id==0||id==1) ? -12 : 0; );
-function kmax(id) ( id==0||id==1 ? 12 : id==5 ? 6 : id==7 ? 4 : 100; );
+function kmax(id) ( id==0||id==1 ? 12 : id==5 ? 6 : id==7 ? 4 : id==8 ? 10 : 100; );
 function kdef(id) ( 0; );
 function kset(id, v) (
   v = min(max(v, kmin(id)), kmax(id));
-  id==7 ? v = floor(v+0.5);
+  (id==7 || id==8) ? v = floor(v+0.5);
   id==0 ? slider1=v : id==1 ? slider10=v : id==2 ? slider9=v : id==3 ? slider3=v :
-  id==4 ? slider4=v : id==5 ? slider8=v : id==6 ? slider11=v : slider5=v;
+  id==4 ? slider4=v : id==5 ? slider8=v : id==6 ? slider11=v : id==7 ? slider5=v : slider17 = v*20;
   id==0 ? sliderchange(1) : id==1 ? sliderchange(10) : id==2 ? sliderchange(9) :
   id==3 ? sliderchange(3) : id==4 ? sliderchange(4) : id==5 ? sliderchange(8) :
-  id==6 ? sliderchange(11) : sliderchange(5);
+  id==6 ? sliderchange(11) : id==7 ? sliderchange(5) : sliderchange(17);
   upd_params();
 );
 function kimg(id) (
   id==0 ? 1 : id==1 ? 1 : id==2 ? 2 : id==3 ? 3 :
-  id==4 ? 3 : id==5 ? 2 : id==6 ? 4 : 5;
+  id==4 ? 3 : id==5 ? 2 : id==6 ? 4 : id==7 ? 5 : 13;
 );
-function kfs(id) ( id==7 ? 102 : 154; );
+function kfs(id) ( id==7 ? 102 : id==8 ? 134 : 154; );
+function kds(id) ( (id==0||id==1) ? 154.5 : id==6 ? 159.5 : id==7 ? 116.9 : id==8 ? 66.9 : 160.8; );
 function kcx(id) (
-  id==0 ? 192 : id==1 ? 853 : id==2 ? 756 : id==3 ? 193 :
-  id==4 ? 410 : id==5 ? 636 : id==6 ? 856 : 294;
+  id==0 ? 146.2 : id==1 ? 808.2 : id==2 ? 709.7 : id==3 ? 146.5 :
+  id==4 ? 364.5 : id==5 ? 589.7 : id==6 ? 808.7 : id==7 ? 248.6 : 257;
 );
 function kcy(id) (
-  id==0 ? 155 : id==1 ? 155 : id==2 ? 300 : id==3 ? 452 :
-  id==4 ? 452 : id==5 ? 452 : id==6 ? 452 : 299;
+  id==0 ? 113 : id==1 ? 113 : id==2 ? 258.3 : id==3 ? 410.8 :
+  id==4 ? 409.8 : id==5 ? 410.3 : id==6 ? 410 : id==7 ? 255.7 : 487;
 );
 function kframe(id) (
-  id==7 ? (slider5|0) :
+  id==7 ? (slider5|0) : id==8 ? ((slider17/20)|0) :
   floor((kval(id)-kmin(id))/(kmax(id)-kmin(id))*127+0.5);
 );
 function hit_knob2(mx,my,cx,cy) (
   (mx-cx)*(mx-cx)+(my-cy)*(my-cy) < 64*64;
 );
 function draw_knob(id) (
-  kk_fr = min(max(kframe(id),0), id==7 ? 4 : 127);
-  kk_fs = kfs(id); kk_cx = kcx(id); kk_cy = kcy(id);
+  // The classic filmstrips carry the disc at 122-123 px inside their
+  // 154 px frames (84/82 in the 102 MONO frame): kds() is the FRAME
+  // size that makes the DISC land on its PSD diameter, and the small
+  // kk_o offsets re-centre the disc (its centre inside the frame is
+  // offset by ~1 px from the frame centre).
+  kk_fr = min(max(kframe(id),0), id==7 ? 4 : id==8 ? 10 : 127);
+  kk_fs = kfs(id); kk_ds = kds(id); kk_cx = kcx(id); kk_cy = kcy(id);
+  kk_ox = (id==7 ? 0.31 : id==8 ? 0 : 0.26)*kk_ds/kk_fs;
+  kk_oy = (id==7 ? 0.34 : id==8 ? 0 : 0.27)*kk_ds/kk_fs;
   gfx_blit(kimg(id), 1, 0, 0, kk_fr*kk_fs, kk_fs, kk_fs,
-            g_px0+kk_cx-kk_fs/2, g_py0+kk_cy-kk_fs/2, kk_fs, kk_fs);
+            g_px0+kk_cx-kk_ds/2+kk_ox, g_py0+kk_cy-kk_ds/2+kk_oy, kk_ds, kk_ds);
 );
-function draw_tog2(cx, fr) (
-  gfx_blit(6, 1, 0, 0, fr*128, 128, 128, g_px0+cx-64, g_py0+589.5-64, 128, 128);
+function draw_tog2(nx, ny, fr) (
+  // Juan's stable-version filmstrip: 128 px frames, ring dia 66 centred
+  // at (64.5, 63.5). Drawn at 87.3 so the ring lands on the PSD socket
+  // diameter (~45). (nx, ny) = the ring centre on the canvas.
+  gfx_blit(6, 1, 0, 0, fr*128, 128, 128, g_px0+nx-44, g_py0+ny-43.3, 87.3, 87.3);
 );
 
 @slider
@@ -763,6 +816,48 @@ function draw_tog2(cx, fr) (
   o0 = z0*out_g; o1 = z1*out_g;
   o0 = o0 != o0 ? 0 : min(max(o0, -4), 4);
   o1 = o1 != o1 ? 0 : min(max(o1, -4), 4);
+  //--- LOW CUT (v1.7.0): TPT/SVF highpass on the summed signal - the
+  // last word before the safety limiter, so the limiter stops
+  // reacting to infrasonics and drive-generated DC. Coefficients,
+  // damping and the 3rd-order blend slew together (~15 ms), and the
+  // whole stage crossfades in/out (~10 ms): stepping the knob or
+  // flipping BUS/INST never clicks. slider17 = 0 is an exact bypass:
+  // once the mix reaches zero the states prime on the input, so
+  // re-engaging starts from steady state.
+  lc_g += (lc_g_t - lc_g)*sm_lc;
+  lc_k += (lc_k_t - lc_k)*sm_lc;
+  lc_3m += ((lc_3rd ? 1 : 0) - lc_3m)*sm_lc;
+  lc_mix += ((lc_on ? 1 : 0) - lc_mix)*sm_lcm;
+  lc_mix > 0.0001 ? (
+    lc_a1 = 1/(1 + lc_g*(lc_g + lc_k));
+    lc_a2 = lc_g*lc_a1;
+    lc_a3 = lc_g*lc_a2;
+    lc_v3 = o0 - lc_ic2_0;
+    lc_v1 = lc_a1*lc_ic1_0 + lc_a2*lc_v3;
+    lc_v2 = lc_ic2_0 + lc_a2*lc_ic1_0 + lc_a3*lc_v3;
+    lc_ic1_0 = 2*lc_v1 - lc_ic1_0;
+    lc_ic2_0 = 2*lc_v2 - lc_ic2_0;
+    lc_hp = o0 - lc_k*lc_v1 - lc_v2;
+    lc_vv = lc_g*(lc_hp - lc_lp_0);
+    lc_ylp = lc_lp_0 + lc_vv;
+    lc_lp_0 = lc_ylp + lc_vv;
+    lc_hp -= lc_3m*lc_ylp;
+    o0 += (lc_hp - o0)*lc_mix;
+    lc_v3 = o1 - lc_ic2_1;
+    lc_v1 = lc_a1*lc_ic1_1 + lc_a2*lc_v3;
+    lc_v2 = lc_ic2_1 + lc_a2*lc_ic1_1 + lc_a3*lc_v3;
+    lc_ic1_1 = 2*lc_v1 - lc_ic1_1;
+    lc_ic2_1 = 2*lc_v2 - lc_ic2_1;
+    lc_hp = o1 - lc_k*lc_v1 - lc_v2;
+    lc_vv = lc_g*(lc_hp - lc_lp_1);
+    lc_ylp = lc_lp_1 + lc_vv;
+    lc_lp_1 = lc_ylp + lc_vv;
+    lc_hp -= lc_3m*lc_ylp;
+    o1 += (lc_hp - o1)*lc_mix;
+  ) : (
+    lc_ic1_0 = 0; lc_ic2_0 = o0; lc_lp_0 = 0;
+    lc_ic1_1 = 0; lc_ic2_1 = o1; lc_lp_1 = 0;
+  );
   //--- output safety limiter: fixed -1 dBFS ceiling on the FINAL output.
   // Sits after the output trim: with Safety ON the plugin can never clip,
   // no matter how hard the sub/air/drive stages are pushed.
@@ -793,15 +888,15 @@ function draw_tog2(cx, fr) (
   cnt >= 1024 ? ( cnt = 0; flush_all(); );
 
 //---------------------------------------------------------------- @gfx
-//---------------------------------------------------------------- @gfx — Juan's panel (fixed 1024x700)
-@gfx 1024 700
+//---------------------------------------------------------------- @gfx - Juan's PSD design (fixed 951x623, plate = window)
+@gfx 951 623
   //--- POWER OFF: VU con apagado gradual (el bypass de audio está en @sample)
   slider15 < 0.5 ? (
     m_in *= 0.999; m_out *= 0.999; m_gr *= 0.999;
     gr_disp = max(gr_disp*0.999, 0.0000001);
   );
   g_px0 = 0; g_py0 = 0;
-  gfx_blit(0, 1, 0, 0,0,1024,700, 0,0,1024,700);
+  gfx_blit(0, 1, 0, 0,0,951,623, 0,0,951,623);
 
   g_mx = mouse_x - g_px0; g_my = mouse_y - g_py0;
   g_mc = mouse_cap & 1;
@@ -811,8 +906,8 @@ function draw_tog2(cx, fr) (
     g_drag = -1;
     // toggles (2-pos): 0=SUB BYPASS 1=SAFETY 2=AIR BYPASS 3=DRIVE POWER
     g_t = 0; while (g_t < 4) (
-      g_tx = g_t==0 ? 192 : g_t==1 ? 409 : g_t==2 ? 635.5 : 745.5;
-      g_mx >= g_tx-48 && g_mx < g_tx+48 && g_my >= 565 && g_my < 614 ? (
+      g_tx = g_t==0 ? 147 : g_t==1 ? 364 : g_t==2 ? 590 : 699;
+      g_mx >= g_tx-48 && g_mx < g_tx+48 && g_my >= 520 && g_my < 576 ? (
         g_t==0 ? ( slider2 = 1-(slider2>0.5); sliderchange(2); ) :
         g_t==1 ? ( slider6 = 1-(slider6>0.5); sliderchange(6); ) :
         g_t==2 ? ( slider7 = 1-(slider7>0.5); sliderchange(7); ) :
@@ -822,32 +917,32 @@ function draw_tog2(cx, fr) (
       g_t += 1;
     );
     // MODE 3-pos drag (LO-MID/FULL/HI-MID -> Drive Focus Sub/Full/Air)
-    g_mx >= 857.5-48 && g_mx < 857.5+48 && g_my >= 565 && g_my < 614 ? (
+    g_mx >= 812.5-48 && g_mx < 812.5+48 && g_my >= 520 && g_my < 576 ? (
       g_modedrag = 1;
     );
     // IN/GR/OUT LED radio (only one active)
     g_b = 0; while (g_b < 3) (
-      g_bx = g_b==0 ? 494 : g_b==1 ? 522 : 552;
-      (g_mx-g_bx)*(g_mx-g_bx)+(g_my-422)*(g_my-422) < 14*14 ? (
+      g_bx = g_b==0 ? 447 : g_b==1 ? 476.5 : 505.5;
+      (g_mx-g_bx)*(g_mx-g_bx)+(g_my-379)*(g_my-379) < 14*14 ? (
         slider14 = g_b;  // 0=IN, 1=GR, 2=OUT (direct)
         sliderchange(14);
       );
       g_b += 1;
     );
     // POWER toggle (vertical: up=ON, down=OFF)
-    (g_mx-526)*(g_mx-526)+(g_my-529)*(g_my-529) < 32*32 ? (
+    (g_mx-480.5)*(g_mx-480.5)+(g_my-487)*(g_my-487) < 32*32 ? (
       slider15 = slider15 > 0.5 ? 0 : 1;
       sliderchange(15);
     );
     // OPERATION toggle (horizontal: left=BUS, right=INST)
     // Simétrico al LED DE-HARSH (904,300) -> (120,300)
-    g_mx >= 120-48 && g_mx < 120+48 && g_my >= 300-48 && g_my < 300+48 ? (
+    g_mx >= 74-48 && g_mx < 74+48 && g_my >= 256.5-48 && g_my < 256.5+48 ? (
       slider16 = slider16 > 0.5 ? 0 : 1;
       sliderchange(16);
       upd_params();
     );
     // knobs (drag)
-    g_k = 0; while (g_k < 8) (
+    g_k = 0; while (g_k < 9) (
       hit_knob2(g_mx,g_my,kcx(g_k),kcy(g_k)) ? (
         (mouse_cap & 12) ? kset(g_k, kdef(g_k)) : (
           g_drag = g_k; gd_y0 = g_my; gd_v0 = kval(g_k);
@@ -860,7 +955,7 @@ function draw_tog2(cx, fr) (
     kset(g_drag, gd_v0 + (gd_y0-g_my)/150*(kmax(g_drag)-kmin(g_drag)));
   );
   g_mc && g_modedrag ? (
-    g_mp = g_mx < 857.5-25 ? 0 : g_mx > 857.5+25 ? 2 : 1;
+    g_mp = g_mx < 812.5-25 ? 0 : g_mx > 812.5+25 ? 2 : 1;
     g_mp != slider12 ? (
       slider12 = g_mp; sliderchange(12); upd_params();
     );
@@ -883,17 +978,17 @@ function draw_tog2(cx, fr) (
   // 23..26 = bottom toggles (SUB BYPASS / SAFETY / AIR BYPASS / DRIVE PWR)
   g_wtgt = 0;
   g_k = 0;
-  while (g_k < 8 && g_wtgt == 0) (
+  while (g_k < 9 && g_wtgt == 0) (
     hit_knob2(g_mx, g_my, kcx(g_k), kcy(g_k)) ? g_wtgt = g_k + 1;
     g_k += 1;
   );
-  (g_wtgt == 0 && g_mx >= 857.5-48 && g_mx < 857.5+48 && g_my >= 565 && g_my < 614) ? g_wtgt = 20;
-  (g_wtgt == 0 && g_mx >= 120-48 && g_mx < 120+48 && g_my >= 252 && g_my < 348) ? g_wtgt = 21;
-  (g_wtgt == 0 && (g_mx-526)*(g_mx-526) + (g_my-529)*(g_my-529) < 32*32) ? g_wtgt = 22;
-  (g_wtgt == 0 && g_mx >= 192-48 && g_mx < 192+48 && g_my >= 565 && g_my < 614) ? g_wtgt = 23;
-  (g_wtgt == 0 && g_mx >= 409-48 && g_mx < 409+48 && g_my >= 565 && g_my < 614) ? g_wtgt = 24;
-  (g_wtgt == 0 && g_mx >= 635.5-48 && g_mx < 635.5+48 && g_my >= 565 && g_my < 614) ? g_wtgt = 25;
-  (g_wtgt == 0 && g_mx >= 745.5-48 && g_mx < 745.5+48 && g_my >= 565 && g_my < 614) ? g_wtgt = 26;
+  (g_wtgt == 0 && g_mx >= 812.5-48 && g_mx < 812.5+48 && g_my >= 520 && g_my < 576) ? g_wtgt = 20;
+  (g_wtgt == 0 && g_mx >= 74-48 && g_mx < 74+48 && g_my >= 208 && g_my < 304) ? g_wtgt = 21;
+  (g_wtgt == 0 && (g_mx-480.5)*(g_mx-480.5) + (g_my-487)*(g_my-487) < 32*32) ? g_wtgt = 22;
+  (g_wtgt == 0 && g_mx >= 147-48 && g_mx < 147+48 && g_my >= 520 && g_my < 576) ? g_wtgt = 23;
+  (g_wtgt == 0 && g_mx >= 364-48 && g_mx < 364+48 && g_my >= 520 && g_my < 576) ? g_wtgt = 24;
+  (g_wtgt == 0 && g_mx >= 590-48 && g_mx < 590+48 && g_my >= 520 && g_my < 576) ? g_wtgt = 25;
+  (g_wtgt == 0 && g_mx >= 699-48 && g_mx < 699+48 && g_my >= 520 && g_my < 576) ? g_wtgt = 26;
   g_wtgt != g_wlast ? ( g_wacc = 0; g_wlast = g_wtgt; );  // no cross-control leaks
   (g_drag >= 0 || g_modedrag) ? g_wacc = 0 : g_wacc += g_wh;
   g_wn = floor(abs(g_wacc)/120);                          // whole notches pending
@@ -901,9 +996,9 @@ function draw_tog2(cx, fr) (
     g_wdir = g_wacc > 0 ? 1 : -1;
     g_wn2 = min(g_wn, 3);                                 // steps applied per frame
     g_wacc -= g_wn*120*g_wdir;                            // consume all counted notches
-    g_wtgt <= 8 ? (
+    g_wtgt <= 9 ? (
       g_k = g_wtgt - 1;
-      g_wstep = g_k==7 ? 1 : g_k==5 ? 0.2 : (g_k==0 || g_k==1) ? 0.5 : 2;
+      g_wstep = (g_k==7 || g_k==8) ? 1 : g_k==5 ? 0.2 : (g_k==0 || g_k==1) ? 0.5 : 2;
       kset(g_k, kval(g_k) + g_wdir*g_wn2*g_wstep);
     ) : g_wtgt == 20 ? (
       // MODE 3-pos: one position per notch, through the centre, clamped
@@ -927,18 +1022,18 @@ function draw_tog2(cx, fr) (
   );
 
   //================ draw ================
-  g_k = 0; while (g_k < 8) ( draw_knob(g_k); g_k += 1; );
-  draw_tog2(192, slider2>0.5 ? 1 : 0);
-  draw_tog2(409, slider6<0.5 ? 1 : 0);
-  draw_tog2(635.5, slider7>0.5 ? 1 : 0);
-  draw_tog2(745.5, slider13>0.5 ? 1 : 0);
-  gfx_blit(7, 1, 0, 0, (slider12|0)*128, 128, 128, g_px0+857.5-64, g_py0+589.5-64, 128, 128);
+  g_k = 0; while (g_k < 9) ( draw_knob(g_k); g_k += 1; );
+  draw_tog2(147, 548.5, slider2>0.5 ? 1 : 0);
+  draw_tog2(364, 547.5, slider6<0.5 ? 1 : 0);
+  draw_tog2(590, 547.5, slider7>0.5 ? 1 : 0);
+  draw_tog2(699, 547.5, slider13>0.5 ? 1 : 0);
+  gfx_blit(7, 1, 0, 0, (slider12|0)*128, 128, 128, g_px0+812-44, g_py0+548-43.3, 87.3, 87.3);
 
   // VU: off image when POWER off, else face + needle
   (slider15 > 0.5) ? (
-    gfx_blit(8, 1, 0, 0,0,218,218, g_px0+521-109, g_py0+253-109, 218,218);
+    gfx_blit(8, 1, 0, 0,0,218,218, g_px0+366.5, g_py0+101.5, 218,218);
   ) : (
-    gfx_blit(12, 1, 0, 0,0,218,218, g_px0+521-109, g_py0+253-109, 218,218);
+    gfx_blit(12, 1, 0, 0,0,218,218, g_px0+366.5, g_py0+101.5, 218,218);
   );
   slider14==0 ? g_vdb = 20*log10(max(vu_in_sm,0.0000001)) :
   slider14==1 ? g_vdb = 20*log10(max(gr_disp,0.0000001)) - red_db :
@@ -949,7 +1044,7 @@ function draw_tog2(cx, fr) (
   g_vang += (g_vang_t - g_vang)*g_vk;
   g_var = g_vang*$pi/180;
   (slider15 > 0.5) ? (
-    g_vpx = g_px0+521; g_vpy = g_py0+274;
+    g_vpx = g_px0+475.5; g_vpy = g_py0+231.5;
     gfx_set(0.10,0.08,0.06);
     gfx_line(g_vpx, g_vpy, g_vpx+95*cos(g_var), g_vpy-95*sin(g_var), 1);
     gfx_set(0.16,0.13,0.10); gfx_circle(g_vpx, g_vpy, 9, 1, 1);
@@ -958,9 +1053,9 @@ function draw_tog2(cx, fr) (
 
   // IN/GR/OUT LEDs: 2-frame (0=off, 1=on), radio behavior
   g_b = 0; while (g_b < 3) (
-    g_bx = g_b==0 ? 494 : g_b==1 ? 522 : 552;
+    g_bx = g_b==0 ? 447 : g_b==1 ? 476.5 : 505.5;
     g_led_fr = ((slider15 > 0.5) && (slider14 == g_b)) ? 1 : 0;
-    gfx_blit(10, 1, 0, 0, g_led_fr*20, 20, 20, g_px0+g_bx-10, g_py0+422-10, 20, 20);
+    gfx_blit(10, 1, 0, 0, g_led_fr*20, 20, 20, g_px0+g_bx-10, g_py0+379-10, 20, 20);
     g_b += 1;
   );
   // DE-HARSH LED (v1.6.0): eager "placebo" law - lights early and climbs
@@ -971,9 +1066,9 @@ function draw_tog2(cx, fr) (
   g_dh_act = min(1, (red_db*0.5 + g_dh_over*1.6) * (0.30 + 0.70*clean01));
   g_dh_target = (slider15 > 0.5 && m_in > 0.001 && (red_db > 0.001 || g_dh_over > 0.002)) ? g_dh_act*127 : 0;
   g_fdh += (g_dh_target - g_fdh) * 0.25;
-  gfx_blit(11, 1, 0, 0, floor(max(0,min(127,g_fdh)))*48, 48, 48, g_px0+904-24, g_py0+300-24, 48, 48);
+  gfx_blit(11, 1, 0, 0, floor(max(0,min(127,g_fdh)))*48, 48, 48, g_px0+859-23.5, g_py0+258.5-23.5, 47, 47);
   // OPERATION lever (2-pos horizontal, img 6): 0=BUS(left) 1=INST(right)
-  gfx_blit(6, 1, 0, 0, (slider16>0.5?1:0)*128, 128, 128, g_px0+120-64, g_py0+300-64, 128, 128);
+  draw_tog2(74, 256.5, slider16>0.5?1:0);
   // MODE/BUS/INST labels are in the panel PNG (Juan's design)
   // POWER toggle (up=ON, down=OFF)
-  gfx_blit(9, 1, 0, 0, (slider15>0.5?0:1)*128, 128, 128, g_px0+526-64, g_py0+529-64, 128, 128);
+  gfx_blit(9, 1, 0, 0, (slider15>0.5?0:1)*128, 128, 128, g_px0+436.7, g_py0+443.4, 87.3, 87.3);
