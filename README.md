@@ -76,3 +76,6 @@ index.xml                   <- generado por reapack-index (no editar a mano)
 ```
 ## ReEQ – FMA Edition
 Install via ReaPack from this repository (FMA Series category). Manual-install package (two-file edition with manuals): see the Release 'ReEQ – FMA Edition 1.2.0-fma.20 — manual install package'.
+### Original filename (drop-in replacement)
+
+Coming from Sai'ke's original ReEQ? The manual-install package in the [release](https://github.com/FMA-Series/fma-reapack/releases/tag/reeq-fma-edition-1.2.0-fma.20) also contains **ReEQ.jsfx** — the same plugin under the original filename. Copy it (with the included folders) over your original `ReEQ.jsfx` and your existing projects reopen with every setting intact, in the original Classic look. ReaPack installs the FMA-named file above; the twin is manual-install only.
