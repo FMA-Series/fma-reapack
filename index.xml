@@ -489,6 +489,11 @@ screenshots/                <- capturas para el cat\u225 ?logo ReaPack\line
 index.xml                   <- generado por reapack-index (no editar a mano)\par}
 {\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 ReEQ \u8211- FMA Edition\par}
 {\pard \ql \f0 \sa180 \li0 \fi0 Install via ReaPack from this repository (FMA Series category). Manual-install package (two-file edition with manuals): see the Release 'ReEQ \u8211- FMA Edition 1.2.0-fma.20 \u8212- manual install package'.\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Original filename (drop-in replacement)\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Coming from Sai'ke's original ReEQ? The manual-install package in the {\field{\*\fldinst{HYPERLINK "https://github.com/FMA-Series/fma-reapack/releases/tag/reeq-fma-edition-1.2.0-fma.20"}}{\fldrslt{\ul
+release
+}}}
+ also contains {\b ReEQ.jsfx} \u8212- the same plugin under the original filename. Copy it (with the included folders) over your original {\f1 ReEQ.jsfx} and your existing projects reopen with every setting intact, in the original Classic look. ReaPack installs the FMA-named file above; the twin is manual-install only.\par}
 }
 ]]></description>
   </metadata>
