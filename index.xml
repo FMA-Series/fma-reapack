@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" commit="d36abc98ab004435c52543910b40beb0c980a872" name="Free Mix Audio">
+<index version="1" commit="b8c308a9e967d7c80108dea42ed425190c2020b3" name="Free Mix Audio">
   <category name="FMA Series">
     <reapack name="fma-sub-air.jsfx" type="effect" desc="FMA Sub-Air">
       <metadata>
@@ -244,8 +244,15 @@ v1.2
 }
 ]]></description>
       </metadata>
-      <version name="1.2.1" author="Justin Johnson (original ReEQ); FMA Edition by Free Mix Audio" time="2026-10-23T00:34:46Z">
-        <changelog><![CDATA[v1.2.1 (2026-10-22)
+      <version name="1.2.2" author="Justin Johnson (original ReEQ); FMA Edition by Free Mix Audio" time="2026-10-23T02:29:27Z">
+        <changelog><![CDATA[v1.2.2 (2026-10-22)
+  - Repository metadata fix: the two include files
+    are now declared as ONE @provides block (the
+    indexer's parser keeps only the last repeated
+    @provides tag, so 1.2.0/1.2.1 installed without
+    the spectrum include). The plugin itself is
+    UNCHANGED - this is the 1.2.0-fma.20 build.
+v1.2.1 (2026-10-22)
   - Repository metadata release: the changelog is
     now published in full (house format, below) and
     both include files are installed together with
@@ -417,8 +424,9 @@ v1.2.0-fma.1 (2026-10-15)
     rate (B7).
   - The full engineering log (fma.1-fma.20) is kept
     inside the file, below the slider definitions.]]></changelog>
-        <source>https://github.com/FMA-Series/fma-reapack/raw/d36abc98ab004435c52543910b40beb0c980a872/FMA%20Series/reeq-fma-edition.jsfx</source>
-        <source file="Dependencies/svf_filter.jsfx-inc">https://github.com/FMA-Series/fma-reapack/raw/d36abc98ab004435c52543910b40beb0c980a872/FMA%20Series/Dependencies/svf_filter.jsfx-inc</source>
+        <source>https://github.com/FMA-Series/fma-reapack/raw/b8c308a9e967d7c80108dea42ed425190c2020b3/FMA%20Series/reeq-fma-edition.jsfx</source>
+        <source file="reeq-fma-edition-deps/spectrum.jsfx-inc">https://github.com/FMA-Series/fma-reapack/raw/b8c308a9e967d7c80108dea42ed425190c2020b3/FMA%20Series/reeq-fma-edition-deps/spectrum.jsfx-inc</source>
+        <source file="Dependencies/svf_filter.jsfx-inc">https://github.com/FMA-Series/fma-reapack/raw/b8c308a9e967d7c80108dea42ed425190c2020b3/FMA%20Series/Dependencies/svf_filter.jsfx-inc</source>
       </version>
     </reapack>
   </category>
