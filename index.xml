@@ -233,7 +233,10 @@ v1.2
         <source file="fma-sub-air_gfx/vu_off.png">https://github.com/FMA-Series/fma-reapack/raw/7454a7c02c96d246e2c8bec88a8232dfee093082/FMA%20Series/fma-sub-air_gfx/vu_off.png</source>
       </version>
       <version name="1.7.1" author="Free Mix Audio" time="2026-10-26T02:38:32Z">
-                <source>https://github.com/FMA-Series/fma-reapack/raw/de5b20a95d91d5048e4524692889b5a9a1116c49/FMA%20Series/fma-sub-air.jsfx</source>
+                <changelog><![CDATA[v1.7.1 (2026-10-26)
+- Sin changelog dentro del archivo; aviso de licencia en cabecera.
+- Sonido identico a la v1.7.0, sin cambios de DSP.]]></changelog>
+        <source>https://github.com/FMA-Series/fma-reapack/raw/de5b20a95d91d5048e4524692889b5a9a1116c49/FMA%20Series/fma-sub-air.jsfx</source>
         <source file="fma-sub-air_gfx/panel.png">https://github.com/FMA-Series/fma-reapack/raw/de5b20a95d91d5048e4524692889b5a9a1116c49/FMA%20Series/fma-sub-air_gfx/panel.png</source>
         <source file="fma-sub-air_gfx/knob_marron.png">https://github.com/FMA-Series/fma-reapack/raw/de5b20a95d91d5048e4524692889b5a9a1116c49/FMA%20Series/fma-sub-air_gfx/knob_marron.png</source>
         <source file="fma-sub-air_gfx/knob_hueso.png">https://github.com/FMA-Series/fma-reapack/raw/de5b20a95d91d5048e4524692889b5a9a1116c49/FMA%20Series/fma-sub-air_gfx/knob_hueso.png</source>
