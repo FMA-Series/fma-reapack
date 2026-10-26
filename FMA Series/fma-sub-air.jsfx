@@ -1,114 +1,22 @@
 desc:FMA Sub-Air
-// @version 1.7.0
+// @version 1.7.1
 // @author Free Mix Audio
-// @changelog
-//   v1.7.0 (2026-10-22)
-//     - NEW GUI (Juan's design, measured 1:1 from his layered PSD):
-//       the window is now exactly the metal plate, 951x623 - the
-//       dark surround is gone. Every control sits at its PSD
-//       position and size: MONO BELOW is back to its designed
-//       proportion (75% of a main knob), chrome bat-toggle levers
-//       and POWER bat from the PSD layers, IN/GR/OUT and DE-HARSH
-//       at their new places. Knob draw sizes are computed from
-//       the measured disc inside each filmstrip (the classic
-//       strips carry the disc at ~122 px inside 154 px frames),
-//       so every knob lands at its exact PSD diameter.
-//     - NEW: LOW CUT (slider17) - stepped high-pass, OFF then
-//       20..200 Hz in 20 Hz steps (11 detents), green pointer knob
-//       between SUB ENHANCE and TIGHT. End of chain, post-sum,
-//       before the safety limiter, so the limiter stops reacting
-//       to infrasonics and drive-generated DC. Slopes follow the
-//       per-mode standard: BUS 12 dB/oct (2nd-order Butterworth),
-//       INST 18 dB/oct (3rd-order Butterworth). TPT/SVF structure,
-//       ~15 ms coefficient slew + ~10 ms engage crossfade (no
-//       clicks, no zipper); 0 = exact bypass.
-//   v1.6.0 (2026-10-20)
-//     - Clean reworked: zone-shaped knob authority (internal
-//       SOFT 0-50% / MID 50-83% / HARD 83-100% zones), gated by
-//       AIR (Clean only polices the boost once AIR passes ~half,
-//       soft knee in), with mode ceilings: INST may eat the whole
-//       boost on harsh peaks; BUS caps the reduction at 3 dB so a
-//       mix bus or master can never be torn apart. Clean still
-//       only reduces the AIR boost, never the source itself.
-//     - De-harsh detector thresholds lowered for sensitivity:
-//       BUS -24 dBFS, INST -32 dBFS (were -18 / -26).
-//     - DE-HARSH LED: new eager law. It lights early and climbs
-//       fast with detector activity and knob position - a livelier
-//       visual than the gentle real reduction behind it.
-//     - New vu_off.png (companion graphics): the needle now rests
-//       parked at the left stop when powered off instead of
-//       disappearing.
-//     - Mouse wheel: every knob and lever (incl. MODE, OPERATION
-//       and POWER) answers to the scroll wheel, one step per notch;
-//       levers are directional - scroll up/down drives them to their
-//       ends and holds them there. Only the IN/GR/OUT meter selector
-//       stays click-only.
-//   v1.5.9 (2026-10-17)
-//     - Fixed VU level followers (IN and OUT): the old one-pole
-//       follower chased the instantaneous rectified signal instead
-//       of holding the peak, so on a steady sine it settled
-//       ~0.6 dB below the true peak at every level (measured:
-//       0 -> -0.6, -6 -> -6.6, -12 -> -12.6 dB). The followers
-//       now hold the peak and decay multiplicatively (150 ms
-//       release), the same form as the peak meters: residual
-//       sine ripple <= 0.07 dB. Needle smoothing and the scale
-//       mapping are unchanged.
-//   v1.5.8 (2026-10-10)
-//     - New OPERATION switch (BUS/INST) with horizontal 2-pos lever,
-//       placed symmetrically opposite the DE-HARSH LED:
-//       BUS mode (left): 160 Hz sub crossover, -18 dBFS de-harsh
-//         threshold, standard drive voicing — for mix bus and mastering.
-//       INST mode (right): 90 Hz sub crossover, -26 dBFS de-harsh
-//         threshold (creative tool, LED responds on normal material),
-//         warmer drive voicing (stronger even-harmonic emphasis) —
-//         for individual instruments and tracks.
-//   v1.5.7 (2026-10-10)
-//     - Fixed sub crossover: the highpass section used 3 biquads
-//       (6th-order) instead of 2 (4th-order), breaking the Linkwitz-Riley
-//       reconstruction and causing a ~5 dB dip at ~154 Hz whenever the
-//       sub section was engaged. Now true LR4 4th-order on both bands.
-//   v1.5.6 (2026-10-09)
-//     - VU face graphics corrected: scale graduation now matches
-//       the needle programming exactly.
-//   v1.5.5 (2026-10-09)
-//     - VU meter ballistics: dedicated level follower with 5ms attack
-//       and 150ms release (Tukan-style), plus asymmetric needle smoothing
-//       (fast attack 0.75, smooth release 0.35) for analog feel.
-//   v1.5.4 (2026-10-09)
-//     - Reduced hit area on the 4 levers (SUB BYPASS,
-//       SAFETY LIMITER, AIR BYPASS, DRIVE POWER) and on the
-//       MODE selector: now ±48px horizontal and 565-614 vertical,
-//       fitted to the graphic edge. POWER unchanged.
-//   v1.5.3 (2026-10-09)
-//     - Code cleanup: removed obsolete comments
-//       (references to previous design sizes and "preview build").
-//   v1.5.2 (2026-10-09)
-//     - Fixed @gfx block order: the size declaration
-//       (@gfx 1024 700) is now the first instruction in the section,
-//       so REAPER opens the window at the correct size.
-//   v1.5.1 (2026-10-09)
-//     - VU Meter Mode now defaults to IN (was GR).
-//   v1.5 (2026-10-09)
-//     - Display name simplificado a "FMA Sub-Air" (sin número de versión)
-//       para evitar conflictos en futuras actualizaciones. La versión
-//       se sigue controlando vía @version para ReaPack.
-//   v1.4 (2026-10-04)
-//     - NEW: Vintage Drive saturator — warm tube-style even-harmonic
-//       saturation ("silk" voicing: asymmetric triode-like curve, ultra-soft
-//       knee, subtlety-first). Red DRIVE knob (0% = transparent) plus
-//       FOCUS selector (Sub / Full / Air) so the user chooses which band
-//       gets saturated. 2x oversampled saturation path for alias-free
-//       harmonics. Drive power switch (ON = processing).
-//   v1.3 (2026-10-01)
-//     - GUI controls now update the DSP in real time (no need to press play)
-//     - Per-section bypass switches respond instantly
-//   v1.2
-//     - Initial FMA Series release
+//
+// LICENSE — FMA Sub-Air v1.7.1 — (c) 2026 Free Mix Audio. All rights reserved.
+// Use authorized as-is ONLY. Do NOT modify this code, in whole or in part.
+// Do NOT redistribute, re-publish, upload or share this plugin or its graphics
+// without prior notice and written authorization from Free Mix Audio.
+// LICENCIA — Uso autorizado TAL CUAL. NO modifiques este codigo, total o parcialmente.
+// NO redistribuyas, re-publiques, subas ni compartas este plugin ni sus graficos
+// sin aviso previo y autorizacion por escrito de Free Mix Audio.
+// Full binding terms: LICENSE.txt included in this package.
+//
 // @about
 //   # FMA Sub-Air
 //   Mastering-grade sub & air sculptor with Vintage Drive saturator.
 //   FMA Series by Free Mix Audio.
-//   Free for students and friends of Free Mix Audio.
+//   Licensed for use as-is only. No modification, no redistribution without
+//   prior notice and written authorization from Free Mix Audio.
 // @provides fma-sub-air_gfx/panel.png
 // @provides fma-sub-air_gfx/knob_marron.png
 // @provides fma-sub-air_gfx/knob_hueso.png
@@ -157,20 +65,6 @@ desc:FMA Sub-Air
 //     smc(tau_seconds), so ballistics are identical at 44.1/48/88.2/96 kHz.
 //     Internal processing is 64-bit throughout (EEL2 doubles).
 //   * NaN/Inf sanitising on input and output; periodic denormal flush.
-//
-// v1.4 (2026-10-04):
-//   * NEW Vintage Drive saturator section (DSP + panel in the v1.3 UI
-//     style; the full vintage PNG interface follows in Phase 2).
-//   * Drive power switch uses ON = processing (no "bypass" double negative).
-//
-// v1.3 (2026-10-01):
-//   * Real-time GUI control: parameter changes made from the custom GUI
-//     now call upd_params() immediately (previously the derived values
-//     only refreshed when REAPER next fired @slider, e.g. on Play).
-//     Section bypasses engage/disengage instantly.
-//   * New rescalable GUI: neon identity from the Free Mix Audio logo,
-//     all-English labels with short explanations of every control.
-//   * desc bumped to v1.3. DSP path unchanged from v1.2 (44/44 verified).
 //
 // NOTE (EEL2 rule, verified empirically): @init must come before any
 // `function` definitions, otherwise calls from @slider/@sample silently
