@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" commit="8b691bbcad1a024f583a60da759e315cd4cb5663" name="Free Mix Audio">
+<index version="1" commit="de5b20a95d91d5048e4524692889b5a9a1116c49" name="Free Mix Audio">
   <category name="FMA Series">
     <reapack name="fma-sub-air.jsfx" type="effect" desc="FMA Sub-Air">
       <metadata>
@@ -8,7 +8,7 @@
 \widowctrl\hyphauto
 
 {\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 FMA Sub-Air\par}
-{\pard \ql \f0 \sa180 \li0 \fi0 Mastering-grade sub & air sculptor with Vintage Drive saturator. FMA Series by Free Mix Audio. Free for students and friends of Free Mix Audio.\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Mastering-grade sub & air sculptor with Vintage Drive saturator. FMA Series by Free Mix Audio. Licensed for use as-is only. No modification, no redistribution without prior notice and written authorization from Free Mix Audio.\par}
 }
 ]]></description>
         <link rel="website">https://www.facebook.com/freemixaudio</link>
@@ -231,6 +231,10 @@ v1.2
         <source file="fma-sub-air_gfx/led_amarillo_fs.png">https://github.com/FMA-Series/fma-reapack/raw/7454a7c02c96d246e2c8bec88a8232dfee093082/FMA%20Series/fma-sub-air_gfx/led_amarillo_fs.png</source>
         <source file="fma-sub-air_gfx/vu_face.png">https://github.com/FMA-Series/fma-reapack/raw/7454a7c02c96d246e2c8bec88a8232dfee093082/FMA%20Series/fma-sub-air_gfx/vu_face.png</source>
         <source file="fma-sub-air_gfx/vu_off.png">https://github.com/FMA-Series/fma-reapack/raw/7454a7c02c96d246e2c8bec88a8232dfee093082/FMA%20Series/fma-sub-air_gfx/vu_off.png</source>
+      </version>
+      <version name="1.7.1" author="Free Mix Audio" time="2026-10-26T02:38:32Z">
+        <source>https://github.com/FMA-Series/fma-reapack/raw/de5b20a95d91d5048e4524692889b5a9a1116c49/FMA%20Series/fma-sub-air.jsfx</source>
+        <source file="fma-sub-air_gfx/vu_off.png">https://github.com/FMA-Series/fma-reapack/raw/de5b20a95d91d5048e4524692889b5a9a1116c49/FMA%20Series/fma-sub-air_gfx/vu_off.png</source>
       </version>
     </reapack>
     <reapack name="FMA_ReEQ_Migrator.lua" type="script" desc="FMA ReEQ Migrator: migrates projects from Sai'ke's original ReEQ to ReEQ - FMA Edition">
@@ -527,6 +531,10 @@ git push\par}
   fma-sub-air_gfx/          <- PNGs de la interfaz (cuando existan)\line
 screenshots/                <- capturas para el cat\u225 ?logo ReaPack\line
 index.xml                   <- generado por reapack-index (no editar a mano)\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 FMA Sub-Air\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Versi\u243 ?n vigente: 1.7.1} (2026-10-26). Id\u233 ?ntica en sonido a la 1.7.0; solo cambia la cabecera del archivo (sin changelog, con aviso de licencia: uso tal cual, sin modificar, sin difundir sin aviso previo y autorizaci\u243 ?n por escrito de Free Mix Audio).\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Manuales:} [Espa\u241 ?ol](FMA Series/docs/Manual-FMA-Sub-Air-v1.7.1-ES.pdf) \u183 ? [English](FMA Series/docs/Manual-FMA-Sub-Air-v1.7.1-EN.pdf).\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Changelog resumido:} [FMA Series/CHANGELOG.md](FMA Series/CHANGELOG.md). El changelog detallado ya no viaja dentro del archivo.\sa180\par}
 {\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 ReEQ \u8211- FMA Edition\par}
 {\pard \ql \f0 \sa180 \li0 \fi0 Install via ReaPack from this repository (FMA Series category). Manual-install package (two-file edition with manuals): see the Release 'ReEQ \u8211- FMA Edition 1.2.0-fma.20 \u8212- manual install package'.\par}
 {\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Original filename (drop-in replacement)\par}
