@@ -74,6 +74,12 @@ FMA Series/
 screenshots/                <- capturas para el catálogo ReaPack
 index.xml                   <- generado por reapack-index (no editar a mano)
 ```
+## FMA Sub-Air
+
+- **Versión vigente: 1.7.1** (2026-10-26). Idéntica en sonido a la 1.7.0; solo cambia la cabecera del archivo (sin changelog, con aviso de licencia: uso tal cual, sin modificar, sin difundir sin aviso previo y autorización por escrito de Free Mix Audio).
+- **Manuales:** [Español](FMA Series/docs/Manual-FMA-Sub-Air-v1.7.1-ES.pdf) · [English](FMA Series/docs/Manual-FMA-Sub-Air-v1.7.1-EN.pdf).
+- **Changelog resumido:** [FMA Series/CHANGELOG.md](FMA Series/CHANGELOG.md). El changelog detallado ya no viaja dentro del archivo.
+
 ## ReEQ – FMA Edition
 Install via ReaPack from this repository (FMA Series category). Manual-install package (two-file edition with manuals): see the Release 'ReEQ – FMA Edition 1.2.0-fma.20 — manual install package'.
 ### Original filename (drop-in replacement)
