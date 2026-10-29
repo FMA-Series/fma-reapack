@@ -85,3 +85,15 @@ Install via ReaPack from this repository (FMA Series category). Manual-install p
 ### Original filename (drop-in replacement)
 
 Coming from Sai'ke's original ReEQ? The manual-install package in the [release](https://github.com/FMA-Series/fma-reapack/releases/tag/reeq-fma-edition-1.2.0-fma.20) also contains **ReEQ.jsfx** — the same plugin under the original filename. Copy it (with the included folders) over your original `ReEQ.jsfx` and your existing projects reopen with every setting intact, in the original Classic look. ReaPack installs the FMA-named file above; the twin is manual-install only.
+
+### Changelog
+
+#### 1.2.6 (2026-10-29)
+- Solo metadatos: el changelog vive ahora en este README; el código del plugin es el mismo que en la 1.2.5.
+
+#### 1.2.5 (2026-10-29)
+- Selector de temas dentro de Settings > GUI.
+- Píldoras del pie al tamaño de su texto, con salto a segunda fila.
+- Sin desapariciones por falta de espacio (solo afecta con escalado de pantalla, p. ej. 175 %): el pie se envuelve y el panel se recoge en una pestaña, todo accesible.
+- Panel por etapas: controles que se esconden de los extremos hacia adentro y quedan editables en el panel "…" por páginas.
+- Fix: pulsar Settings ya no deselecciona el nodo.
