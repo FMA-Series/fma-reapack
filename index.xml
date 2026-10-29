@@ -584,6 +584,15 @@ index.xml                   <- generado por reapack-index (no editar a mano)\par
 release
 }}}
  also contains {\b ReEQ.jsfx} \u8212- the same plugin under the original filename. Copy it (with the included folders) over your original {\f1 ReEQ.jsfx} and your existing projects reopen with every setting intact, in the original Classic look. ReaPack installs the FMA-named file above; the twin is manual-install only.\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Changelog\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel3 \b \fs24 1.2.6 (2026-10-29)\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Solo metadatos: el changelog vive ahora en este README; el c\u243 ?digo del plugin es el mismo que en la 1.2.5.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel3 \b \fs24 1.2.5 (2026-10-29)\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Selector de temas dentro de Settings > GUI.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab P\u237 ?ldoras del pie al tama\u241 ?o de su texto, con salto a segunda fila.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Sin desapariciones por falta de espacio (solo afecta con escalado de pantalla, p. ej. 175 %): el pie se envuelve y el panel se recoge en una pesta\u241 ?a, todo accesible.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Panel por etapas: controles que se esconden de los extremos hacia adentro y quedan editables en el panel "\u8230 ?" por p\u225 ?ginas.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Fix: pulsar Settings ya no deselecciona el nodo.\sa180\par}
 }
 ]]></description>
   </metadata>
