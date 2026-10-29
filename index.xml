@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" commit="ce618a4789d9bebae640807cbf69e41f17cef0ec" name="Free Mix Audio">
+<index version="1" commit="0a44e893dc5d4ee0e729599f8ee375a0f15dd49b" name="Free Mix Audio">
   <category name="FMA Series">
     <reapack name="fma-sub-air.jsfx" type="effect" desc="FMA Sub-Air">
       <metadata>
@@ -266,6 +266,24 @@ v1.2
       <version name="1.0" author="Free Mix Audio" time="2026-10-25T20:57:34Z">
         <changelog><![CDATA[Initial ReaPack release (same script delivered 2026-10-23; migrates .rpp, .RfxChain and .RTrackTemplate files, writing backup + migrated copies without touching the original)]]></changelog>
         <source main="main">https://github.com/FMA-Series/fma-reapack/raw/8b691bbcad1a024f583a60da759e315cd4cb5663/FMA%20Series/FMA_ReEQ_Migrator.lua</source>
+      </version>
+    </reapack>
+    <reapack name="reeq-fma-edition.jsfx" type="effect" desc="ReEQ - Parametric Graphic Equalizer (FMA Edition)">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 ReEQ - Parametric Graphic Equalizer (FMA Edition)\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Corrected and extended edition of ReEQ v1.2.0 by Justin Johnson, released under the MIT license; original copyright and attribution are preserved. FMA Series by Free Mix Audio.\par}
+}
+]]></description>
+      </metadata>
+      <version name="1.2.6" author="Justin Johnson (original ReEQ); FMA Edition by Free Mix Audio" time="2026-10-29T08:45:10Z">
+        <changelog><![CDATA[See README for the changelog.]]></changelog>
+        <source>https://github.com/FMA-Series/fma-reapack/raw/0a44e893dc5d4ee0e729599f8ee375a0f15dd49b/FMA%20Series/reeq-fma-edition.jsfx</source>
+        <source file="reeq-fma-edition-deps/spectrum.jsfx-inc">https://github.com/FMA-Series/fma-reapack/raw/0a44e893dc5d4ee0e729599f8ee375a0f15dd49b/FMA%20Series/reeq-fma-edition-deps/spectrum.jsfx-inc</source>
+        <source file="Dependencies/svf_filter.jsfx-inc">https://github.com/FMA-Series/fma-reapack/raw/0a44e893dc5d4ee0e729599f8ee375a0f15dd49b/FMA%20Series/Dependencies/svf_filter.jsfx-inc</source>
       </version>
     </reapack>
   </category>
